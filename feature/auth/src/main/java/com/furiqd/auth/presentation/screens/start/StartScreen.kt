@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,13 +29,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.furiqd.auth.R
 import com.furiqd.designsystem.theme.ItsAliveTheme
 
 @Composable
 fun StartScreen(
-    onNavigateToSignUp: () -> Unit,
-    onNavigateToSignIn: () -> Unit,
+    onEvent: (StartEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -107,7 +108,7 @@ fun StartScreen(
             Spacer(modifier = Modifier.height(40.dp))
 
             Button(
-                onClick = onNavigateToSignUp,
+                onClick = { onEvent(StartEvent.SignUpClicked) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -140,7 +141,7 @@ fun StartScreen(
                     letterSpacing = 0.5.sp
                 )
                 TextButton(
-                    onClick = onNavigateToSignIn,
+                    onClick = { onEvent(StartEvent.SignInClicked)},
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
@@ -156,13 +157,36 @@ fun StartScreen(
     }
 }
 
+@Composable
+fun StartRoute(
+    onNavigateToSignUp: () -> Unit,
+    onNavigateToLogin: () -> Unit,
+    viewModel: StartViewModel = hiltViewModel()
+){
+    LaunchedEffect(Unit) {
+        viewModel.uiEffect.collect { effect ->
+            when (effect) {
+                StartEffect.NavigateToSignUp -> onNavigateToSignUp()
+                StartEffect.NavigateToSignIn -> onNavigateToLogin()
+                is StartEffect.ShowError -> { /* Показать Snackbar */
+                }
+            }
+
+        }
+    }
+    StartScreen(
+        onEvent = viewModel::handleEvent,
+        modifier = Modifier.fillMaxSize()
+    )
+}
+
 @Preview(name = "Dark Theme", showBackground = true, device = "spec:width=411dp,height=891dp")
 @Composable
 fun PreviewStartScreenDark() {
     ItsAliveTheme(darkTheme = true) {
         StartScreen(
-            onNavigateToSignUp = {},
-            onNavigateToSignIn = {}
+            onEvent = {},
+            modifier = Modifier.fillMaxSize()
         )
     }
 }
@@ -172,8 +196,8 @@ fun PreviewStartScreenDark() {
 fun PreviewStartScreenLight() {
     ItsAliveTheme(darkTheme = false) {
         StartScreen(
-            onNavigateToSignUp = {},
-            onNavigateToSignIn = {}
+            onEvent = {},
+            modifier = Modifier.fillMaxSize()
         )
     }
 }
