@@ -1,4 +1,4 @@
-package com.furiqd.auth.presentation.start
+package com.furiqd.auth.presentation.screens.start
 
 sealed interface StartEvent {
     object SignUpClicked : StartEvent

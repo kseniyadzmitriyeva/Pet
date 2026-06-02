@@ -9,10 +9,16 @@
 
     <string name="auth_signup_title">Create your account</string>
     <string name="auth_continue_google">CONTINUE WITH GOOGLE</string>
-    <string name="auth_or_email">OR LOG IN WITH EMAIL</string>
+    <string name="auth_or_email">OR SIGN UP WITH EMAIL</string>
     <string name="auth_placeholder_name">Name</string>
     <string name="auth_placeholder_email">Email</string>
     <string name="auth_placeholder_password">Password</string>
     <string name="auth_privacy_text">I have read the Privacy Policy</string>
     <string name="auth_btn_get_started">GET STARTED</string>
+
+    <string name="auth_login_title">Welcome back!</string>
+    <string name="auth_login_or_email">OR LOG IN WITH EMAIL</string>
+    <string name="auth_forgot_password">Forgot password?</string>
+    <string name="auth_login_dont_have_account">STILL DON\'T HAVE AN ACCOUNT?</string>
+    <string name="auth_login_btn_signup">SIGN UP</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.furiqd.auth.presentation.signin
+package com.furiqd.auth.presentation.screens.signin
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -43,6 +43,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.furiqd.auth.R
+import com.furiqd.auth.presentation.elements.BackButton
+import com.furiqd.auth.presentation.elements.LoginWithGoogleButton
 import com.furiqd.designsystem.R.drawable
 import com.furiqd.designsystem.theme.ItsAliveTheme
 
@@ -61,16 +63,9 @@ fun SignInScreen(
             .padding(horizontal = 24.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        IconButton(
+        BackButton(
             onClick = { onEvent(SignInEvent.BackClicked) },
-            modifier = Modifier.padding(top = 16.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = drawable.arrow_narrow_left_icon_151607),
-                contentDescription = "Back",
-                tint = MaterialTheme.colorScheme.onBackground
-            )
-        }
+            modifier = Modifier)
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -107,28 +102,8 @@ fun SignInScreen(
                 )
             }
         }
-        Button(
-            onClick = { onEvent(SignInEvent.GoogleClicked) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(30.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.onBackground
-            )
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(id = R.drawable.google_logo),
-                    contentDescription = null,
-                    tint = Color.Unspecified,
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(text = stringResource(id = R.string.auth_continue_google), fontWeight = FontWeight.Bold)
-            }
-        }
+        LoginWithGoogleButton(onClick = { onEvent(SignInEvent.GoogleClicked) },
+            modifier = Modifier)
 
         Spacer(modifier = Modifier.height(16.dp))
 

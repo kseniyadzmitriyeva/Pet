@@ -1,4 +1,4 @@
-package com.furiqd.auth.presentation.signup
+package com.furiqd.auth.presentation.screens.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpViewModel@Inject constructor() : ViewModel() {
 
-    private val _uiState = MutableStateFlow(SignUpUiState())
+    private val _uiState = MutableStateFlow(SignUpState())
     val uiState = _uiState.asStateFlow()
 
     private val _uiEffect = Channel<SignUpEffect>()
@@ -43,6 +43,9 @@ class SignUpViewModel@Inject constructor() : ViewModel() {
             }
             SignUpEvent.BackClicked -> {
                 viewModelScope.launch { _uiEffect.send(SignUpEffect.NavigateBack) }
+            }
+            SignUpEvent.GoToSignInClicked -> {
+                viewModelScope.launch { _uiEffect.send(SignUpEffect.NavigateToSignIn) }
             }
         }
     }

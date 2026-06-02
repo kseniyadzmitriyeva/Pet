@@ -1,6 +1,6 @@
-package com.furiqd.auth.presentation.signup
+package com.furiqd.auth.presentation.screens.signup
 
-data class SignUpUiState(
+data class SignUpState(
     val name: String = "",
     val email: String = "",
     val password: String = "",

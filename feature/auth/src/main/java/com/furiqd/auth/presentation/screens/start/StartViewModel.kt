@@ -1,10 +1,11 @@
-package com.furiqd.auth.presentation.start
+package com.furiqd.auth.presentation.screens.start
 
+import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import javax.inject.Inject
 
 @HiltViewModel
-class StartViewModel {
+class StartViewModel@Inject constructor() : ViewModel(){
     fun handleEvent(event: StartEvent) {
         when (event) {
             StartEvent.SignUpClicked -> {

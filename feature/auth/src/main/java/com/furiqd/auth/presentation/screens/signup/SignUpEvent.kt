@@ -1,4 +1,4 @@
-package com.furiqd.auth.presentation.signup
+package com.furiqd.auth.presentation.screens.signup
 
 sealed interface SignUpEvent{
     data class NameChanged(val name: String) : SignUpEvent
@@ -8,4 +8,5 @@ sealed interface SignUpEvent{
     object GoogleClicked : SignUpEvent
     object SignUpClicked : SignUpEvent
     object BackClicked : SignUpEvent
+    object GoToSignInClicked: SignUpEvent
 }

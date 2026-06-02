@@ -1,6 +1,5 @@
-package com.furiqd.auth.presentation.start
+package com.furiqd.auth.presentation.screens.start
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

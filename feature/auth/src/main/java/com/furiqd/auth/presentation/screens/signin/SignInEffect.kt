@@ -1,4 +1,4 @@
-package com.furiqd.auth.presentation.signin
+package com.furiqd.auth.presentation.screens.signin
 sealed interface SignInEffect {
     object NavigateBack : SignInEffect
     object NavigateToWelcome : SignInEffect

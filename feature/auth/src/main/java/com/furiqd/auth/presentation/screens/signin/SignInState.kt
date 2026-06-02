@@ -1,4 +1,4 @@
-package com.furiqd.auth.presentation.signin
+package com.furiqd.auth.presentation.screens.signin
 
 data class SignInState(
     val email: String = "",
