@@ -1,4 +1,6 @@
 package com.furiqd.data.repositories
 
-class AuthRepository {
+import javax.inject.Inject
+
+class AuthRepositoryImpl@Inject constructor(): AuthRepository {
 }
