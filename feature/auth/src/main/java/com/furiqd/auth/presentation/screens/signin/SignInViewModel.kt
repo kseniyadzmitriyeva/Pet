@@ -2,6 +2,9 @@ package com.furiqd.auth.presentation.screens.signin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.furiqd.auth.domain.usecase.AuthUseCases
+import com.furiqd.auth.presentation.helper.AuthWithGoogleHelper
+import com.furiqd.auth.presentation.helper.AuthWithGoogleHelper.AuthUiResult // Импортируем результат хелпера
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,32 +15,25 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignInViewModel@Inject constructor() : ViewModel(){
+class SignInViewModel @Inject constructor(
+    private val authUseCases: AuthUseCases,
+    private val authHelper: AuthWithGoogleHelper
+) : ViewModel() {
+
     private val _uiState = MutableStateFlow(SignInState())
     val uiState = _uiState.asStateFlow()
 
     private val _uiEffect = Channel<SignInEffect>()
     val uiEffect = _uiEffect.receiveAsFlow()
 
-    fun handleEvent(event: SignInEvent){
-        when(event){
-            is SignInEvent.SignInClicked ->{
-                _uiState.update { it.copy(isLoading = true) }
-                viewModelScope.launch {
-                    _uiEffect.send(SignInEffect.NavigateToWelcome)
-                }
-            }
-            is SignInEvent.GoToSignUpClicked -> {
-                _uiState.update { it.copy(isLoading = true) }
-                viewModelScope.launch { _uiEffect.send(SignInEffect.NavigateToSignUp) }
-            }
-            is SignInEvent.BackClicked -> {
-                _uiState.update { it.copy(isLoading = true) }
-                viewModelScope.launch { _uiEffect.send(SignInEffect.NavigateBack) }
-            }
+    fun handleEvent(event: SignInEvent, context: android.content.Context? = null) {
+        when (event) {
             is SignInEvent.GoogleClicked -> {
+                context?.let { signInWithGoogle(it) }
+            }
+            is SignInEvent.SignInClicked -> {
                 _uiState.update { it.copy(isLoading = true) }
-                _uiState.update { it.copy(isLoading = false) }
+                signInWithEmail()
             }
             is SignInEvent.EmailChanged -> {
                 _uiState.update { it.copy(email = event.email) }
@@ -45,11 +41,55 @@ class SignInViewModel@Inject constructor() : ViewModel(){
             is SignInEvent.PasswordChanged -> {
                 _uiState.update { it.copy(password = event.password) }
             }
+            is SignInEvent.GoToSignUpClicked -> {
+                viewModelScope.launch { _uiEffect.send(SignInEffect.NavigateToSignUp) }
+            }
+            is SignInEvent.BackClicked -> {
+                viewModelScope.launch { _uiEffect.send(SignInEffect.NavigateBack) }
+            }
             is SignInEvent.ForgotPasswordClicked -> {
-                _uiState.update { it.copy(isLoading = true) }
                 viewModelScope.launch { _uiEffect.send(SignInEffect.NavigateToForgotPassword) }
             }
         }
+    }
+    private fun signInWithGoogle(context: android.content.Context) {
+        _uiState.update { it.copy(isLoading = true) }
 
+        viewModelScope.launch {
+            when (val uiResult = authHelper.launchAuthUi(context)) {
+                is AuthUiResult.GoogleSuccess -> {
+                    val domainResult = authUseCases.signInWithGoogle(uiResult.idToken)
+
+                    domainResult.onSuccess {
+                        _uiState.update { it.copy(isLoading = false) }
+                        _uiEffect.send(SignInEffect.NavigateToWelcome)
+                    }.onFailure { error ->
+                        _uiState.update { it.copy(isLoading = false) }
+                        _uiEffect.send(SignInEffect.ShowError(error.message ?: "Неизвестная ошибка"))
+                    }
+                }
+                is AuthUiResult.Failure -> {
+                    _uiState.update { it.copy(isLoading = false) }
+                    _uiEffect.send(SignInEffect.ShowError(uiResult.error.message ?: "Неизвестная ошибка"))
+                }
+            }
+        }
+    }
+
+    private fun signInWithEmail() {
+        _uiState.update { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            val result = authUseCases.signInWithEmailAndPassword(
+                email = _uiState.value.email,
+                password = _uiState.value.password
+            )
+            result.onSuccess {
+                _uiState.update { it.copy(isLoading = false) }
+                _uiEffect.send(SignInEffect.NavigateToWelcome)
+            }.onFailure { error ->
+                _uiState.update { it.copy(isLoading = false) }
+                _uiEffect.send(SignInEffect.ShowError(error.message ?: "Неверный логин или пароль"))
+            }
+        }
     }
 }

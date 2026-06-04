@@ -19,6 +19,10 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -26,6 +30,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            val clientId = project.findProperty("GOOGLE_WEB_CLIENT_ID")?.toString() ?: ""
+            buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$clientId\"")
+        }
+        debug {
+            val clientId = project.findProperty("GOOGLE_WEB_CLIENT_ID")?.toString() ?: ""
+            buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$clientId\"")
         }
     }
     compileOptions {
@@ -37,6 +47,7 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(project(":core:designsystem"))
+    implementation(project(":core:data"))
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -47,12 +58,16 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     implementation(libs.hilt.android)
-    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.firestore)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services)
+    implementation(libs.google.googleid)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

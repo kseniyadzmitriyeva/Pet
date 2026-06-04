@@ -2,6 +2,10 @@ package com.furiqd.auth.presentation.screens.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.furiqd.auth.domain.usecase.AuthUseCases
+import com.furiqd.auth.presentation.helper.AuthWithGoogleHelper
+import com.furiqd.auth.presentation.helper.AuthWithGoogleHelper.AuthUiResult
+import com.furiqd.auth.presentation.screens.signin.SignInEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +16,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel@Inject constructor() : ViewModel() {
+class SignUpViewModel@Inject constructor(
+    private val authUseCases: AuthUseCases,
+    private val authHelper: AuthWithGoogleHelper
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SignUpState())
     val uiState = _uiState.asStateFlow()
@@ -20,7 +27,7 @@ class SignUpViewModel@Inject constructor() : ViewModel() {
     private val _uiEffect = Channel<SignUpEffect>()
     val uiEffect = _uiEffect.receiveAsFlow()
 
-    fun handleEvent(event: SignUpEvent) {
+    fun handleEvent(event: SignUpEvent,context : android.content.Context? = null) {
         when (event) {
             is SignUpEvent.NameChanged -> {
                 _uiState.update { it.copy(name = event.name) }
@@ -34,18 +41,59 @@ class SignUpViewModel@Inject constructor() : ViewModel() {
             is SignUpEvent.PrivacyChecked -> {
                 _uiState.update { it.copy(isPrivacyChecked = event.isChecked) }
             }
-            SignUpEvent.GoogleClicked -> { /* Логика Google */ }
+            SignUpEvent.GoogleClicked -> {
+                context?.let { signInWithGoogle(it) }
+            }
             SignUpEvent.SignUpClicked -> {
                 _uiState.update { it.copy(isLoading = true) }
-                viewModelScope.launch {
-                    _uiEffect.send(SignUpEffect.NavigateToWelcome)
-                }
+                signUpWithEmail()
             }
             SignUpEvent.BackClicked -> {
                 viewModelScope.launch { _uiEffect.send(SignUpEffect.NavigateBack) }
             }
             SignUpEvent.GoToSignInClicked -> {
                 viewModelScope.launch { _uiEffect.send(SignUpEffect.NavigateToSignIn) }
+            }
+        }
+    }
+
+    private fun signUpWithEmail() {
+        _uiState.update { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            val result = authUseCases.signUpWithEmailAndPassword(
+                email = _uiState.value.email,
+                password = _uiState.value.password
+            )
+            result.onSuccess {
+                _uiState.update { it.copy(isLoading = false) }
+                _uiEffect.send(SignUpEffect.NavigateToWelcome)
+            }.onFailure { error ->
+                _uiState.update { it.copy(isLoading = false) }
+                _uiEffect.send(SignUpEffect.ShowError(error.message ?: "Неверный логин или пароль"))
+            }
+        }
+    }
+
+    private fun signInWithGoogle(context: android.content.Context) {
+        _uiState.update { it.copy(isLoading = true) }
+
+        viewModelScope.launch {
+            when (val uiResult = authHelper.launchAuthUi(context)) {
+                is AuthUiResult.GoogleSuccess -> {
+                    val domainResult = authUseCases.signInWithGoogle(uiResult.idToken)
+
+                    domainResult.onSuccess {
+                        _uiState.update { it.copy(isLoading = false) }
+                        _uiEffect.send(SignUpEffect.NavigateToWelcome)
+                    }.onFailure { error ->
+                        _uiState.update { it.copy(isLoading = false) }
+                        _uiEffect.send(SignUpEffect.ShowError(error.message ?: "Unknown error"))
+                    }
+                }
+                is AuthUiResult.Failure -> {
+                    _uiState.update { it.copy(isLoading = false) }
+                    _uiEffect.send(SignUpEffect.ShowError(uiResult.error.message ?: "Unknown error"))
+                }
             }
         }
     }

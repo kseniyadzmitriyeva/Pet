@@ -32,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.furiqd.auth.R
+import com.furiqd.auth.domain.usecase.SignInWithEmailAndPasswordUseCase
 import com.furiqd.auth.presentation.elements.BackButton
 import com.furiqd.auth.presentation.elements.LoginWithGoogleButton
 import com.furiqd.designsystem.R.drawable
@@ -223,6 +225,7 @@ fun SignInRoute(
     viewModel: SignInViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { effect ->
@@ -238,32 +241,6 @@ fun SignInRoute(
 
     SignInScreen(
         state = state,
-        onEvent = viewModel::handleEvent
+        onEvent = { event -> viewModel.handleEvent(event, context) }
     )
-}
-
-@Preview(name = "Dark Theme", showBackground = true, device = "spec:width=411dp,height=891dp")
-@Composable
-fun PreviewStartScreenDark() {
-    ItsAliveTheme(darkTheme = true) {
-        val state = SignInState()
-        val viewModel = SignInViewModel()
-        SignInScreen(
-            state = state,
-            onEvent = viewModel::handleEvent
-        )
-    }
-}
-
-@Preview(name = "Light Theme", showBackground = true, device = "spec:width=411dp,height=891dp")
-@Composable
-fun PreviewStartScreenLight() {
-    ItsAliveTheme(darkTheme = false) {
-        val state = SignInState()
-        val viewModel = SignInViewModel()
-        SignInScreen(
-            state = state,
-            onEvent = viewModel::handleEvent
-        )
-    }
 }

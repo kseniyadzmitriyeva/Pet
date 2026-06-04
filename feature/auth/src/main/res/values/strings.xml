@@ -26,4 +26,6 @@
     <string name="auth_forgot_password_desc">We\'ve sent a verification link and instructions to your email address to reset your password.</string>
     <string name="auth_btn_open_email">OPEN EMAIL APP</string>
     <string name="auth_btn_resend">RESEND CODE</string>
+
+    <string name="auth_unknown_error">Unknown error</string>
 </resources>
