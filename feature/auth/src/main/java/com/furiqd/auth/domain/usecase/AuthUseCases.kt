@@ -49,7 +49,7 @@ class SignInWithGoogleUseCase @Inject constructor(
     }
 }
 
-data class AuthUseCases(
+data class AuthUseCases @Inject constructor(
     val signInWithEmailAndPassword: SignInWithEmailAndPasswordUseCase,
     val signUpWithEmailAndPassword: SignUpWithEmailAndPasswordUseCase,
     val signInWithGoogle: SignInWithGoogleUseCase

@@ -205,29 +205,3 @@ fun SignUpRoute(
         onEvent = viewModel::handleEvent
     )
 }
-
-@Preview(name = "Dark Theme", showBackground = true, device = "spec:width=411dp,height=891dp")
-@Composable
-fun PreviewStartScreenDark() {
-    ItsAliveTheme(darkTheme = true) {
-        val state = SignUpState()
-        val viewModel = SignUpViewModel()
-        SignUpScreen(
-            state = state,
-            onEvent = viewModel::handleEvent
-        )
-    }
-}
-
-@Preview(name = "Light Theme", showBackground = true, device = "spec:width=411dp,height=891dp")
-@Composable
-fun PreviewStartScreenLight() {
-    ItsAliveTheme(darkTheme = false) {
-        val state = SignUpState()
-        val viewModel = SignUpViewModel()
-        SignUpScreen(
-            state = state,
-            onEvent = viewModel::handleEvent
-        )
-    }
-}

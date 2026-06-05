@@ -27,7 +27,7 @@ class SignUpViewModel@Inject constructor(
     private val _uiEffect = Channel<SignUpEffect>()
     val uiEffect = _uiEffect.receiveAsFlow()
 
-    fun handleEvent(event: SignUpEvent,context : android.content.Context? = null) {
+    fun handleEvent(event: SignUpEvent,context : android.content.Context? = null ) {
         when (event) {
             is SignUpEvent.NameChanged -> {
                 _uiState.update { it.copy(name = event.name) }
