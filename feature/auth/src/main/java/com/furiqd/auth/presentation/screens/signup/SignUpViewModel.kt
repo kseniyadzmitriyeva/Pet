@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.furiqd.auth.domain.usecase.AuthUseCases
 import com.furiqd.auth.presentation.helper.AuthWithGoogleHelper
 import com.furiqd.auth.presentation.helper.AuthWithGoogleHelper.AuthUiResult
+import com.furiqd.auth.presentation.helper.InputValidator
 import com.furiqd.auth.presentation.screens.signin.SignInEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -33,10 +34,18 @@ class SignUpViewModel@Inject constructor(
                 _uiState.update { it.copy(name = event.name) }
             }
             is SignUpEvent.EmailChanged -> {
-                _uiState.update { it.copy(email = event.email) }
+                val error = InputValidator.validateEmail(event.email)
+                _uiState.update { it.copy(
+                    email = event.email,
+                    emailError = error,
+                    isSignUpEnabled = it.password.isNotBlank() && error == null) }
             }
             is SignUpEvent.PasswordChanged -> {
-                _uiState.update { it.copy(password = event.password) }
+                val error = InputValidator.validatePassword(event.password)
+                _uiState.update { it.copy(
+                    password = event.password,
+                    passwordError = error,
+                    isSignUpEnabled = it.email.isNotBlank() && error == null) }
             }
             is SignUpEvent.PrivacyChecked -> {
                 _uiState.update { it.copy(isPrivacyChecked = event.isChecked) }

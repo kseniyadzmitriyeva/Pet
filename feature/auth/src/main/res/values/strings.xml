@@ -28,4 +28,12 @@
     <string name="auth_btn_resend">RESEND CODE</string>
 
     <string name="auth_unknown_error">Unknown error</string>
+
+    <string name="error_email_empty">Field Email cannot be empty</string>
+    <string name="error_email_invalid">Uncorrect email format (example: name@domain.com)</string>
+
+    <string name="error_password_empty">Field password cannot be empty</string>
+    <string name="error_password_too_short">Password must be at least 8 characters</string>
+    <string name="error_password_invalid_characters">Password must contain only letters and numbers</string>
+
 </resources>

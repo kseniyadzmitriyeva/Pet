@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.furiqd.auth.domain.usecase.AuthUseCases
 import com.furiqd.auth.presentation.helper.AuthWithGoogleHelper
 import com.furiqd.auth.presentation.helper.AuthWithGoogleHelper.AuthUiResult // Импортируем результат хелпера
+import com.furiqd.auth.presentation.helper.InputValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,10 +37,21 @@ class SignInViewModel @Inject constructor(
                 signInWithEmail()
             }
             is SignInEvent.EmailChanged -> {
-                _uiState.update { it.copy(email = event.email) }
+                val error = InputValidator.validateEmail(event.email)
+                _uiState.update {
+                    it.copy(
+                        email = event.email,
+                        emailError = error,
+                        isSignInEnabled = it.password.isNotBlank() && error == null
+                    )
+                }
             }
             is SignInEvent.PasswordChanged -> {
-                _uiState.update { it.copy(password = event.password) }
+                val error = InputValidator.validatePassword(event.password)
+                _uiState.update { it.copy(
+                    password = event.password,
+                    passwordError = error,
+                    isSignInEnabled = it.email.isNotBlank() && error == null) }
             }
             is SignInEvent.GoToSignUpClicked -> {
                 viewModelScope.launch { _uiEffect.send(SignInEffect.NavigateToSignUp) }

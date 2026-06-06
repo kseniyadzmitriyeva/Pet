@@ -47,6 +47,7 @@ import com.furiqd.auth.R
 import com.furiqd.auth.domain.usecase.SignInWithEmailAndPasswordUseCase
 import com.furiqd.auth.presentation.elements.BackButton
 import com.furiqd.auth.presentation.elements.LoginWithGoogleButton
+import com.furiqd.auth.presentation.helper.asString
 import com.furiqd.designsystem.R.drawable
 import com.furiqd.designsystem.theme.ItsAliveTheme
 
@@ -129,6 +130,14 @@ fun SignInScreen(
             singleLine = true
         )
 
+        state.emailError?.let {
+            Text(
+                text = it.asString(),
+                color = MaterialTheme.colorScheme.error,
+                fontSize = 12.sp
+            )
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
@@ -140,6 +149,14 @@ fun SignInScreen(
             singleLine = true,
             visualTransformation = PasswordVisualTransformation()
         )
+
+        state.passwordError?.let {
+            Text(
+                text = it.asString(),
+                color = MaterialTheme.colorScheme.error,
+                fontSize = 12.sp
+            )
+        }
 
         Row(
             modifier = Modifier.fillMaxWidth(),
