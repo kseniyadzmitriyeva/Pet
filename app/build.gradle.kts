@@ -56,6 +56,9 @@ dependencies {
     ksp(libs.hilt.android.compiler)
 
     implementation(project(":feature:auth"))
+    implementation(project(":feature:personalisation"))
+    implementation(project(":feature:home"))
+    implementation(project(":core:data"))
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)

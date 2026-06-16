@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="welcome_logo_title">IT\'S ALIVE</string>
+    <string name="welcome_title_with_name">Hey %1$s!</string>
+    <string name="welcome_title_default">Hey there!</string>
+    <string name="welcome_subtitle">Ready to bring your progress to life?\nLet’s get started.</string>
+    <string name="welcome_mascot_placeholder">👾\n[Your Fire Mascot\nis sleeping here]</string>
+    <string name="welcome_button_start">Let’s do this!</string>
+</resources>

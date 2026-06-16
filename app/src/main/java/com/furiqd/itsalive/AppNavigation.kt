@@ -6,27 +6,49 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.furiqd.auth.presentation.navigation.authGraph
 import com.furiqd.auth.presentation.navigation.AuthGraph
-import kotlinx.serialization.Serializable
-
-@Serializable object AuthGraph
-@Serializable object RootHomeGraph
+import com.furiqd.home.presentation.navigation.HomeGraph
+import com.furiqd.home.presentation.navigation.homeGraph
+import com.furiqd.personalisation.presentation.navigation.personalisationGraph
+import com.furiqd.personalisation.presentation.navigation.PersonalisationGraph
 
 @Composable
-fun AppNavigation(modifier: Modifier = Modifier) {
+fun AppNavigation(
+    startGraph: Any = AuthGraph,
+    modifier: Modifier = Modifier
+) {
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = AuthGraph,
+        startDestination = startGraph,
         modifier = modifier
     ) {
         authGraph(
             navController = navController,
-            onAuthSuccess = {
-                navController.navigate(RootHomeGraph) {
+            onAuthSuccess = { isOnboardingCompleted ->
+                val targetDestination = if (isOnboardingCompleted) {
+                    HomeGraph
+                } else {
+                    PersonalisationGraph
+                }
+
+                navController.navigate(targetDestination) {
                     popUpTo(AuthGraph) { inclusive = true }
                 }
             }
+        )
+
+        personalisationGraph(
+            navController = navController,
+            onPersonalisationComplete = {
+                navController.navigate(HomeGraph) {
+                    popUpTo(PersonalisationGraph) { inclusive = true }
+                }
+            }
+        )
+
+        homeGraph(
+            navController = navController
         )
     }
 }

@@ -7,10 +7,9 @@ import androidx.navigation.navigation
 import com.furiqd.auth.presentation.screens.signin.SignInRoute
 import com.furiqd.auth.presentation.screens.signup.SignUpRoute
 import com.furiqd.auth.presentation.screens.start.StartRoute
-import com.furiqd.auth.presentation.screens.welcome.WelcomeRoute
 
 fun NavGraphBuilder.authGraph(navController: NavController,
-                              onAuthSuccess: () -> Unit) {
+                              onAuthSuccess: (Boolean) -> Unit) {
     navigation<AuthGraph>(startDestination = StartDestination) {
 
         composable<StartDestination> {
@@ -22,11 +21,7 @@ fun NavGraphBuilder.authGraph(navController: NavController,
 
         composable<SignUpDestination> {
             SignUpRoute(
-                onNavigateToWelcome = {
-                    navController.navigate("home_graph") {
-                        popUpTo(AuthGraph) { inclusive = true }
-                    }
-                },
+                onNavigateToWelcome = { onAuthSuccess(true)},
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToSignIn = { navController.navigate(SignInDestination) }
             )
@@ -37,10 +32,7 @@ fun NavGraphBuilder.authGraph(navController: NavController,
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToSignUp = { navController.navigate(SignUpDestination) },
                 onNavigateToForgotPassword = { navController.navigate(ForgotPasswordDestination) },
-                onNavigateToWelcome = {
-                    navController.navigate("home_graph") {
-                        popUpTo(AuthGraph) { inclusive = true }
-                    }
+                onNavigateToWelcome = { onAuthSuccess(true)
                 }
             )
         }
@@ -49,12 +41,6 @@ fun NavGraphBuilder.authGraph(navController: NavController,
             /*ForgotPasswordRoute(
                 onNavigateBack = { navController.popBackStack() }
             )*/
-        }
-
-        composable<WelcomeDestination> {
-            WelcomeRoute(
-                onGetStartedClicked = onAuthSuccess
-            )
         }
     }
 }

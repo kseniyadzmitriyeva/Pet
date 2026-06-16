@@ -4,6 +4,8 @@ import com.furiqd.data.repositories.AuthRepository
 import com.furiqd.data.repositories.AuthRepositoryImpl
 import com.furiqd.data.repositories.TokenRepository
 import com.furiqd.data.repositories.TokenRepositoryImpl
+import com.furiqd.data.repositories.UserRepository
+import com.furiqd.data.repositories.UserRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -25,4 +27,10 @@ abstract class RepositoryModule {
     abstract fun bindTokenRepository(
         tokenRepositoryImpl: TokenRepositoryImpl
     ): TokenRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserRepository(
+        userRepositoryImpl: UserRepositoryImpl
+    ): UserRepository
 }

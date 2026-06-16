@@ -36,6 +36,7 @@ android {
 dependencies {
     implementation(project(":core:network"))
     implementation(libs.androidx.datastore)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.tink.android)
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)

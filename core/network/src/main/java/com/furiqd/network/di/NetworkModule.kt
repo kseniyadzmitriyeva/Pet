@@ -1,5 +1,7 @@
 package com.furiqd.network.di
 
+import com.furiqd.network.auth.FirebaseAuthDataSource
+import com.furiqd.network.auth.RemoteAuthDataSource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -22,5 +24,14 @@ object NetworkModule {
     @Singleton
     fun provideFirebaseFirestore(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRemoteAuthDataSource(
+        auth: FirebaseAuth,
+        firestore: FirebaseFirestore
+    ): RemoteAuthDataSource {
+        return FirebaseAuthDataSource(auth, firestore)
     }
 }

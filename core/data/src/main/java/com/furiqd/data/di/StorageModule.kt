@@ -6,6 +6,7 @@ import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
 import com.furiqd.data.storage.CryptoManager
 import com.furiqd.data.storage.TokenSerializer
+import com.furiqd.data.storage.UserPreferencesManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,5 +28,4 @@ object StorageModule {
             produceFile = { context.dataStoreFile("secure_token.pb") }
         )
     }
-
 }

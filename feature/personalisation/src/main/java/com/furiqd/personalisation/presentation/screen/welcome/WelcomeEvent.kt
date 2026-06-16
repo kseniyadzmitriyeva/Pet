@@ -1,4 +1,4 @@
-package com.furiqd.auth.presentation.screens.welcome
+package com.furiqd.personalisation.presentation.screen.welcome
 
 sealed interface WelcomeEvent {
     object onGetStartedClicked : WelcomeEvent
