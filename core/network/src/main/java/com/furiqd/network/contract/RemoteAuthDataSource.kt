@@ -8,5 +8,8 @@ interface RemoteAuthDataSource {
     val currentUserId: String?
     suspend fun getUserProfile(userId: String): UserDto?
     suspend fun saveUserProfile(userDto: UserDto)
+    suspend fun checkOnboardingStatus(userId: String): Boolean
+
+    suspend fun saveOnboardingStatus(userId: String, isCompleted: Boolean): Boolean
     suspend fun signOut()
 }

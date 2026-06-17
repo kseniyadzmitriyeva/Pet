@@ -1,13 +1,13 @@
 package com.furiqd.data.di
 
-import com.furiqd.data.repositories.AuthRepository
 import com.furiqd.data.repositories.AuthRepositoryImpl
-import com.furiqd.data.repositories.AvatarRepository
 import com.furiqd.data.repositories.AvatarRepositoryImpl
-import com.furiqd.data.repositories.TokenRepository
 import com.furiqd.data.repositories.TokenRepositoryImpl
-import com.furiqd.data.repositories.UserRepository
 import com.furiqd.data.repositories.UserRepositoryImpl
+import com.furiqd.domain.repository.AuthRepository
+import com.furiqd.domain.repository.AvatarRepository
+import com.furiqd.domain.repository.TokenRepository
+import com.furiqd.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

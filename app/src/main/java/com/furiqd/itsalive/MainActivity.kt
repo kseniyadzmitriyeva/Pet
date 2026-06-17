@@ -16,7 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.furiqd.auth.presentation.navigation.AuthGraph
-import com.furiqd.data.models.UserSessionState
+import com.furiqd.domain.model.UserSessionState
 import com.furiqd.home.presentation.navigation.HomeGraph
 import com.furiqd.itsalive.ui.theme.ItsAliveTheme
 import com.furiqd.personalisation.presentation.navigation.PersonalisationGraph

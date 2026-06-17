@@ -1,8 +1,8 @@
 package com.furiqd.auth.domain.usecase
 
-import com.furiqd.data.repositories.AuthRepository
-import com.furiqd.data.repositories.TokenRepository
-import com.furiqd.data.repositories.UserRepository
+import com.furiqd.domain.repository.AuthRepository
+import com.furiqd.domain.repository.TokenRepository
+import com.furiqd.domain.repository.UserRepository
 import javax.inject.Inject
 
 class SignInWithEmailAndPasswordUseCase @Inject constructor(

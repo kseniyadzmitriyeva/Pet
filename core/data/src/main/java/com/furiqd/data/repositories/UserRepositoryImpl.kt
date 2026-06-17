@@ -5,7 +5,7 @@ import com.furiqd.data.mapper.toDto
 import com.furiqd.domain.model.User
 import com.furiqd.domain.model.UserSessionState
 import com.furiqd.domain.repository.UserRepository
-import com.furiqd.local.datasource.UserLocalDataSource
+import com.furiqd.local.contract.UserLocalDataSource
 import com.furiqd.local.entity.LocalUserEntity
 import com.furiqd.network.contract.RemoteAuthDataSource
 import kotlinx.coroutines.CoroutineScope

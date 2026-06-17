@@ -38,8 +38,4 @@ class AuthWithFirebaseAuthenticator @Inject constructor(
             Result.failure(e)
         }
     }
-
-    fun signOut() {
-        auth.signOut()
-    }
 }

@@ -1,5 +1,6 @@
 package com.furiqd.local.datasource
 
+import com.furiqd.local.contract.UserLocalDataSource
 import com.furiqd.local.entity.LocalUserEntity
 import com.furiqd.local.storage.UserPreferencesManager
 import kotlinx.coroutines.flow.Flow

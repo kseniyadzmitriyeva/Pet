@@ -4,14 +4,14 @@ import com.furiqd.data.mapper.toDomain
 import com.furiqd.data.mapper.toEntity
 import com.furiqd.domain.model.PairingRoom
 import com.furiqd.domain.repository.RoomRepository
-import com.furiqd.local.datasource.PairingLocalDataSource
-import com.furiqd.network.contract.PairingRemoteDataSource
+import com.furiqd.local.contract.PairingLocalDataSource
+import com.furiqd.network.contract.RemotePairingDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class RoomRepositoryImpl @Inject constructor(
-    private val remoteDataSource: PairingRemoteDataSource,
+    private val remoteDataSource: RemotePairingDataSource,
     private val localDataSource: PairingLocalDataSource
 ) : RoomRepository {
 

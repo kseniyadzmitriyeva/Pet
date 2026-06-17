@@ -25,13 +25,4 @@ object NetworkModule {
     fun provideFirebaseFirestore(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
     }
-
-    @Provides
-    @Singleton
-    fun provideRemoteAuthDataSource(
-        auth: FirebaseAuth,
-        firestore: FirebaseFirestore
-    ): RemoteAuthDataSource {
-        return FirebaseAuthDataSource(auth, firestore)
-    }
 }

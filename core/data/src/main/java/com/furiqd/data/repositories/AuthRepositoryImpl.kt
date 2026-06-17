@@ -1,11 +1,15 @@
 package com.furiqd.data.repositories
 
 import com.furiqd.domain.repository.AuthRepository
+import com.furiqd.local.contract.UserLocalDataSource
+import com.furiqd.network.contract.RemoteAuthDataSource
 import com.furiqd.network.datasource.AuthWithFirebaseAuthenticator
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    private val authWithFirebaseAuthenticator: AuthWithFirebaseAuthenticator
+    private val authWithFirebaseAuthenticator: AuthWithFirebaseAuthenticator,
+    private val localDataSource: UserLocalDataSource,
+    private val remoteDataSource: RemoteAuthDataSource,
 ) : AuthRepository {
 
     override suspend fun signInWithEmailAndPassword(
@@ -41,5 +45,12 @@ class AuthRepositoryImpl @Inject constructor(
                 Result.failure(error)
             }
         )
+    }
+
+    override suspend fun signOut(): Result<Unit> {
+        return runCatching {
+            remoteDataSource.signOut()
+            localDataSource.clearLocalData()
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.furiqd.local.datasource
 
+import com.furiqd.local.contract.PairingLocalDataSource
 import com.furiqd.local.entity.JointPetEntity
 import com.furiqd.local.room.PetDao
 import com.furiqd.local.storage.PairingPreferencesManager

@@ -1,6 +1,6 @@
 package com.furiqd.network.datasource
 
-import com.furiqd.network.contract.PairingRemoteDataSource
+import com.furiqd.network.contract.RemotePairingDataSource
 import com.furiqd.network.dto.JointPetDto
 import com.furiqd.network.dto.PairingRoomDto
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class FirebasePairingDataSource @Inject constructor(
     private val firestore: FirebaseFirestore
-) : PairingRemoteDataSource {
+) : RemotePairingDataSource {
 
     private val roomsCollection = firestore.collection("rooms")
 
