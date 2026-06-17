@@ -1,7 +1,7 @@
 package com.furiqd.data.di
 
 import com.furiqd.data.storage.UserLocalDataSource
-import com.furiqd.data.storage.UserLocalDataSourceImpl
+import com.furiqd.local.datasource.UserLocalDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

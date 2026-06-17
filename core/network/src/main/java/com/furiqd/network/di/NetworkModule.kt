@@ -1,7 +1,7 @@
 package com.furiqd.network.di
 
-import com.furiqd.network.auth.FirebaseAuthDataSource
-import com.furiqd.network.domain.RemoteAuthDataSource
+import com.furiqd.network.datasource.FirebaseAuthDataSource
+import com.furiqd.network.contract.RemoteAuthDataSource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module

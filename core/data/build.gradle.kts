@@ -35,6 +35,9 @@ android {
 
 dependencies {
     implementation(project(":core:network"))
+    implementation(project(":core:local"))
+    implementation(project(":domain"))
+
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.tink.android)
@@ -43,6 +46,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

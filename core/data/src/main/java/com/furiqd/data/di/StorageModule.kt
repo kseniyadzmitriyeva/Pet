@@ -4,9 +4,8 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
-import com.furiqd.data.storage.CryptoManager
-import com.furiqd.data.storage.TokenSerializer
-import com.furiqd.data.storage.UserPreferencesManager
+import com.furiqd.local.storage.CryptoManager
+import com.furiqd.local.storage.TokenSerializer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
