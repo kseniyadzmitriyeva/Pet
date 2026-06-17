@@ -3,7 +3,7 @@ package com.furiqd.data.repositories
 import com.furiqd.data.di.ApplicationScope
 import com.furiqd.data.models.UserSessionState
 import com.furiqd.data.storage.UserLocalDataSource
-import com.furiqd.network.auth.RemoteAuthDataSource
+import com.furiqd.network.domain.RemoteAuthDataSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

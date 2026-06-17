@@ -1,4 +1,4 @@
-package com.furiqd.personalisation.presentation.helper
+package com.furiqd.designsystem.config
 
 import com.furiqd.designsystem.R
 

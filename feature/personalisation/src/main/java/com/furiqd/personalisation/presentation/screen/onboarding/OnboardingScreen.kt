@@ -21,9 +21,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.furiqd.designsystem.config.AvatarConfig
 import com.furiqd.personalisation.R
 import com.furiqd.personalisation.presentation.element.AvatarSelectionDialog
-import com.furiqd.personalisation.presentation.helper.AvatarConfig
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

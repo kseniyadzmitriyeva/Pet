@@ -1,5 +1,6 @@
 package com.furiqd.network.auth
 
+import com.furiqd.network.domain.RemoteAuthDataSource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose

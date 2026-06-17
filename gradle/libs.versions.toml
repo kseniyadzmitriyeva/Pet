@@ -34,6 +34,7 @@ androidx-compose-material-icons-extended = { module = "androidx.compose.material
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidCompiler" }

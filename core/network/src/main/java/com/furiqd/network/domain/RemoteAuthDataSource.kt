@@ -1,4 +1,4 @@
-package com.furiqd.network.auth
+package com.furiqd.network.domain
 
 import kotlinx.coroutines.flow.Flow
 
