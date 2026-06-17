@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.furiqd.personalisation.presentation.screen.onboarding.OnboardingRoute
 import com.furiqd.personalisation.presentation.screen.welcome.WelcomeRoute
 
 
@@ -14,6 +15,12 @@ fun NavGraphBuilder.personalisationGraph(navController: NavController,
         composable<WelcomeDestination> {
             WelcomeRoute(
                 onNavigateToOnboarding = { navController.navigate(OnboardingDestination) }
+            )
+        }
+
+        composable<OnboardingDestination> {
+            OnboardingRoute(
+                onNavigateToNext = onPersonalisationComplete
             )
         }
     }

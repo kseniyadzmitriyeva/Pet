@@ -2,6 +2,8 @@ package com.furiqd.data.di
 
 import com.furiqd.data.repositories.AuthRepository
 import com.furiqd.data.repositories.AuthRepositoryImpl
+import com.furiqd.data.repositories.AvatarRepository
+import com.furiqd.data.repositories.AvatarRepositoryImpl
 import com.furiqd.data.repositories.TokenRepository
 import com.furiqd.data.repositories.TokenRepositoryImpl
 import com.furiqd.data.repositories.UserRepository
@@ -33,4 +35,10 @@ abstract class RepositoryModule {
     abstract fun bindUserRepository(
         userRepositoryImpl: UserRepositoryImpl
     ): UserRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAvatarRepository(
+        avatarRepositoryImpl: AvatarRepositoryImpl
+    ): AvatarRepository
 }
