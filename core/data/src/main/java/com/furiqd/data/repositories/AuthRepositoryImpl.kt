@@ -1,5 +1,7 @@
 package com.furiqd.data.repositories
 
+import com.furiqd.domain.model.AuthResult
+import com.furiqd.network.dto.AuthResultDto
 import com.furiqd.domain.repository.AuthRepository
 import com.furiqd.local.contract.UserLocalDataSource
 import com.furiqd.network.contract.RemoteAuthDataSource
@@ -28,9 +30,16 @@ class AuthRepositoryImpl @Inject constructor(
         return mapTokenResult(result)
     }
 
-    override suspend fun signInWithGoogle(idToken: String): Result<String> {
-        val result = authWithFirebaseAuthenticator.signInWithGoogleToken(idToken)
-        return mapTokenResult(result)
+    override suspend fun signInWithGoogle(idToken: String): Result<AuthResult> {
+        return runCatching {
+            val firebaseResult = authWithFirebaseAuthenticator.signInWithGoogleToken(idToken)
+            val firebaseUser = firebaseResult.getOrThrow()
+            AuthResult(
+                token = idToken,
+                email = firebaseUser.email,
+                name = firebaseUser.name
+            )
+        }
     }
     private fun mapTokenResult(networkResult: Result<String?>): Result<String> {
         return networkResult.fold(

@@ -1,8 +1,8 @@
 package com.furiqd.domain.model
 
 sealed interface UserSessionState {
-    object Loading : UserSessionState
-    object NotAuthorized : UserSessionState
-    object NeedsOnboarding : UserSessionState
-    object FullyAuthorized : UserSessionState
+    data object Loading : UserSessionState
+    data object NotAuthorized : UserSessionState
+    data object NeedsOnboarding : UserSessionState
+    data object FullyAuthorized : UserSessionState
 }

@@ -3,13 +3,13 @@ package com.furiqd.personalisation.presentation.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-object PersonalisationGraph
+data object PersonalisationGraph
 
 @Serializable
-object WelcomeDestination
+data object WelcomeDestination
 
 @Serializable
-object AimDestination
+data object AimDestination
 
 @Serializable
-object OnboardingDestination
+data object OnboardingDestination

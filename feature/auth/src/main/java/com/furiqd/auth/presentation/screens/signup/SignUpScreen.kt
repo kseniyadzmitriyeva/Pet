@@ -11,13 +11,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,9 +22,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.furiqd.auth.R
 import com.furiqd.auth.presentation.elements.BackButton
 import com.furiqd.auth.presentation.elements.LoginWithGoogleButton
-import com.furiqd.auth.presentation.screens.signin.SignInEvent
-import com.furiqd.designsystem.R.drawable
-import com.furiqd.designsystem.theme.ItsAliveTheme
 
 @Composable
 fun SignUpScreen(
@@ -73,17 +67,6 @@ fun SignUpScreen(
             fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        OutlinedTextField(
-            value = state.name,
-            onValueChange = { onEvent(SignUpEvent.NameChanged(it)) },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(stringResource(id = R.string.auth_placeholder_name)) },
-            shape = RoundedCornerShape(16.dp),
-            singleLine = true
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -182,7 +165,7 @@ fun SignUpScreen(
 
 @Composable
 fun SignUpRoute(
-    onNavigateToWelcome: () -> Unit,
+    onNavigateToWelcome: (Boolean) -> Unit,
     onNavigateBack: () -> Unit,
     onNavigateToSignIn: () -> Unit,
     viewModel: SignUpViewModel = hiltViewModel()
@@ -192,7 +175,7 @@ fun SignUpRoute(
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { effect ->
             when (effect) {
-                SignUpEffect.NavigateToWelcome -> onNavigateToWelcome()
+                is SignUpEffect.NavigateToWelcome -> onNavigateToWelcome(effect.isOnboardingCompleted)
                 SignUpEffect.NavigateBack -> onNavigateBack()
                 SignUpEffect.NavigateToSignIn -> onNavigateToSignIn()
                 is SignUpEffect.ShowError -> { /* Показать Snackbar */ }

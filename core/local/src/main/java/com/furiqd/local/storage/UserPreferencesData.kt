@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class UserPreferencesData(
     val id: String,
     val name: String,
-    val avatarId: Int?
+    val avatarId: Int?,
+    val isOnboardingCompleted: Boolean
 )

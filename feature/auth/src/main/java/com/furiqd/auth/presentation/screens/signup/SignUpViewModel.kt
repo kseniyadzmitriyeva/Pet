@@ -6,7 +6,6 @@ import com.furiqd.auth.domain.usecase.AuthUseCases
 import com.furiqd.auth.presentation.helper.AuthWithGoogleHelper
 import com.furiqd.auth.presentation.helper.AuthWithGoogleHelper.AuthUiResult
 import com.furiqd.auth.presentation.helper.InputValidator
-import com.furiqd.auth.presentation.screens.signin.SignInEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel@Inject constructor(
+class SignUpViewModel @Inject constructor(
     private val authUseCases: AuthUseCases,
     private val authHelper: AuthWithGoogleHelper
 ) : ViewModel() {
@@ -28,7 +27,7 @@ class SignUpViewModel@Inject constructor(
     private val _uiEffect = Channel<SignUpEffect>()
     val uiEffect = _uiEffect.receiveAsFlow()
 
-    fun handleEvent(event: SignUpEvent,context : android.content.Context? = null ) {
+    fun handleEvent(event: SignUpEvent, context: android.content.Context? = null) {
         when (event) {
             is SignUpEvent.NameChanged -> {
                 _uiState.update { it.copy(name = event.name) }
@@ -73,9 +72,9 @@ class SignUpViewModel@Inject constructor(
                 email = _uiState.value.email,
                 password = _uiState.value.password
             )
-            result.onSuccess {
+            result.onSuccess { isOnboardingCompleted ->
                 _uiState.update { it.copy(isLoading = false) }
-                _uiEffect.send(SignUpEffect.NavigateToWelcome)
+                _uiEffect.send(SignUpEffect.NavigateToWelcome(isOnboardingCompleted))
             }.onFailure { error ->
                 _uiState.update { it.copy(isLoading = false) }
                 _uiEffect.send(SignUpEffect.ShowError(error.message ?: "Неверный логин или пароль"))
@@ -91,9 +90,9 @@ class SignUpViewModel@Inject constructor(
                 is AuthUiResult.GoogleSuccess -> {
                     val domainResult = authUseCases.signInWithGoogle(uiResult.idToken)
 
-                    domainResult.onSuccess {
+                    domainResult.onSuccess { isOnboardingCompleted ->
                         _uiState.update { it.copy(isLoading = false) }
-                        _uiEffect.send(SignUpEffect.NavigateToWelcome)
+                        _uiEffect.send(SignUpEffect.NavigateToWelcome(isOnboardingCompleted))
                     }.onFailure { error ->
                         _uiState.update { it.copy(isLoading = false) }
                         _uiEffect.send(SignUpEffect.ShowError(error.message ?: "Unknown error"))

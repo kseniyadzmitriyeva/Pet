@@ -3,6 +3,7 @@ package com.furiqd.personalisation.presentation.screen.onboarding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.furiqd.domain.model.User
+import com.furiqd.domain.repository.UserRepository
 import com.furiqd.personalisation.domain.GetAvatarsUseCase
 import com.furiqd.personalisation.domain.SaveUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
     private val getAvailableAvatarsUseCase: GetAvatarsUseCase,
-    private val saveUserUseCase: SaveUserUseCase
+    private val saveUserUseCase: SaveUserUseCase,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(OnboardingState())
@@ -39,6 +41,16 @@ class OnboardingViewModel @Inject constructor(
                     currentState.copy(
                         nickname = event.nickname,
                         isNicknameError = event.nickname.isNotEmpty() && isLengthError,
+                        isNextButtonEnabled = !isLengthError && currentState.selectedAvatarId != null
+                    )
+                }
+            }
+            is OnboardingEvent.NameChanged -> {
+                _uiState.update { currentState ->
+                    val isLengthError = event.name.length !in 2..15
+                    currentState.copy(
+                        name = event.name,
+                        isNameError = event.name.isNotEmpty() && isLengthError,
                         isNextButtonEnabled = !isLengthError && currentState.selectedAvatarId != null
                     )
                 }
@@ -63,14 +75,19 @@ class OnboardingViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, isNextButtonEnabled = false) }
 
-            val user = User(
-                id = "",
-                name = _uiState.value.nickname.trim(),
+            val currentUser = userRepository.getUser()
+            
+            val updatedUser = User(
+                id = currentUser?.id ?: "",
+                email = currentUser?.email,
+                nickName = _uiState.value.nickname.trim(),
+                roomIds = currentUser?.roomIds ?: emptyList(),
                 avatarId = _uiState.value.selectedAvatarId,
+                name = _uiState.value.name.trim(),
                 isOnboardingCompleted = true
             )
 
-            saveUserUseCase(user)
+            saveUserUseCase(updatedUser)
                 .onSuccess {
                     _uiState.update { it.copy(isLoading = false) }
                     _effect.send(OnboardingEffect.NavigateToNext)

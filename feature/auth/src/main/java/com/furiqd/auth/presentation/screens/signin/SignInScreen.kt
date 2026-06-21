@@ -13,15 +13,12 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -31,25 +28,19 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.furiqd.auth.R
-import com.furiqd.auth.domain.usecase.SignInWithEmailAndPasswordUseCase
 import com.furiqd.auth.presentation.elements.BackButton
 import com.furiqd.auth.presentation.elements.LoginWithGoogleButton
 import com.furiqd.auth.presentation.helper.asString
-import com.furiqd.designsystem.R.drawable
-import com.furiqd.designsystem.theme.ItsAliveTheme
 
 @Composable
 fun SignInScreen(
@@ -235,7 +226,7 @@ fun SignInScreen(
 
 @Composable
 fun SignInRoute(
-    onNavigateToWelcome: () -> Unit,
+    onNavigateToWelcome: (Boolean) -> Unit,
     onNavigateBack: () -> Unit,
     onNavigateToSignUp: () -> Unit,
     onNavigateToForgotPassword: () -> Unit,
@@ -247,7 +238,7 @@ fun SignInRoute(
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { effect ->
             when (effect) {
-                SignInEffect.NavigateToWelcome -> onNavigateToWelcome()
+                is SignInEffect.NavigateToWelcome -> onNavigateToWelcome(effect.isOnboardingCompleted)
                 SignInEffect.NavigateBack -> onNavigateBack()
                 SignInEffect.NavigateToSignUp -> onNavigateToSignUp()
                 SignInEffect.NavigateToForgotPassword -> onNavigateToForgotPassword()

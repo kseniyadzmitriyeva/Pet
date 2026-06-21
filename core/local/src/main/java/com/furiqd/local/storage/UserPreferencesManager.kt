@@ -37,6 +37,7 @@ class UserPreferencesManager @Inject constructor(
             UserPreferencesData(
                 id = preferences[USER_ID_KEY] ?: "",
                 name = preferences[USER_NAME_KEY] ?: "",
+                isOnboardingCompleted = preferences[ONBOARDING_KEY] ?: false,
                 avatarId = preferences[USER_AVATAR_ID_KEY]
             )
         }

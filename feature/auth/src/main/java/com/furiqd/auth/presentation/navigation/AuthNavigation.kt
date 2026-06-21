@@ -3,19 +3,19 @@ package com.furiqd.auth.presentation.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-object AuthGraph
+data object AuthGraph
 
 @Serializable
-object StartDestination
+data object StartDestination
 
 @Serializable
-object SignInDestination
+data object SignInDestination
 
 @Serializable
-object SignUpDestination
+data object SignUpDestination
 
 @Serializable
-object ForgotPasswordDestination
+data object ForgotPasswordDestination
 
 @Serializable
-object WelcomeDestination
+data object WelcomeDestination

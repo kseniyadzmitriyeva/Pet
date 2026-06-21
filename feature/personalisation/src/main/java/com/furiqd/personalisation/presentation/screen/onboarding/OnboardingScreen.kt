@@ -107,6 +107,17 @@ fun OnboardingScreen(
                     }
                 )
 
+                Spacer(modifier = Modifier.height(24.dp))
+
+                OutlinedTextField(
+                    value = state.name,
+                    onValueChange = { onEvent(OnboardingEvent.NameChanged(it)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text(stringResource(R.string.onboarding_error_nickname_length)) },
+                    shape = RoundedCornerShape(16.dp),
+                    singleLine = true
+                )
+
                 Spacer(modifier = Modifier.weight(1f))
 
                 Button(

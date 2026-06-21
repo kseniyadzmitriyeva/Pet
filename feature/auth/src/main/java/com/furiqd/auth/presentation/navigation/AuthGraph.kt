@@ -21,7 +21,9 @@ fun NavGraphBuilder.authGraph(navController: NavController,
 
         composable<SignUpDestination> {
             SignUpRoute(
-                onNavigateToWelcome = { onAuthSuccess(true)},
+                onNavigateToWelcome = { isOnboardingCompleted -> 
+                    onAuthSuccess(isOnboardingCompleted)
+                },
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToSignIn = { navController.navigate(SignInDestination) }
             )
@@ -32,7 +34,8 @@ fun NavGraphBuilder.authGraph(navController: NavController,
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToSignUp = { navController.navigate(SignUpDestination) },
                 onNavigateToForgotPassword = { navController.navigate(ForgotPasswordDestination) },
-                onNavigateToWelcome = { onAuthSuccess(true)
+                onNavigateToWelcome = { isOnboardingCompleted ->
+                    onAuthSuccess(isOnboardingCompleted)
                 }
             )
         }

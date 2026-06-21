@@ -1,11 +1,18 @@
 package com.furiqd.network.dto
 
 import com.google.firebase.firestore.DocumentId
+import com.google.firebase.firestore.PropertyName
 
 data class UserDto(
     @DocumentId
-    val id: String = "",
-    val name: String = "",
-    val avatarId: Int? = null,
-    val isOnboardingCompleted: Boolean = false
+    var id: String = "",
+    var name: String = "",
+    var avatarId: Int? = null,
+    @get:PropertyName("isOnboardingCompleted")
+    @set:PropertyName("isOnboardingCompleted")
+    @PropertyName("isOnboardingCompleted")
+    var isOnboardingCompleted: Boolean = false,
+    var email: String? = null,
+    var nickName: String? = null,
+    var roomIds: List<String> = emptyList()
 )

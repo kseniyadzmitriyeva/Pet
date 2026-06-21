@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.furiqd.auth.domain.usecase.AuthUseCases
 import com.furiqd.auth.presentation.helper.AuthWithGoogleHelper
-import com.furiqd.auth.presentation.helper.AuthWithGoogleHelper.AuthUiResult // Импортируем результат хелпера
+import com.furiqd.auth.presentation.helper.AuthWithGoogleHelper.AuthUiResult
 import com.furiqd.auth.presentation.helper.InputValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -72,9 +72,9 @@ class SignInViewModel @Inject constructor(
                 is AuthUiResult.GoogleSuccess -> {
                     val domainResult = authUseCases.signInWithGoogle(uiResult.idToken)
 
-                    domainResult.onSuccess {
+                    domainResult.onSuccess { isOnboardingCompleted ->
                         _uiState.update { it.copy(isLoading = false) }
-                        _uiEffect.send(SignInEffect.NavigateToWelcome)
+                        _uiEffect.send(SignInEffect.NavigateToWelcome(isOnboardingCompleted))
                     }.onFailure { error ->
                         _uiState.update { it.copy(isLoading = false) }
                         _uiEffect.send(SignInEffect.ShowError(error.message ?: "Неизвестная ошибка"))
@@ -95,9 +95,9 @@ class SignInViewModel @Inject constructor(
                 email = _uiState.value.email,
                 password = _uiState.value.password
             )
-            result.onSuccess {
+            result.onSuccess { isOnboardingCompleted ->
                 _uiState.update { it.copy(isLoading = false) }
-                _uiEffect.send(SignInEffect.NavigateToWelcome)
+                _uiEffect.send(SignInEffect.NavigateToWelcome(isOnboardingCompleted))
             }.onFailure { error ->
                 _uiState.update { it.copy(isLoading = false) }
                 _uiEffect.send(SignInEffect.ShowError(error.message ?: "Неверный логин или пароль"))

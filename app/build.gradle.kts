@@ -7,6 +7,10 @@ plugins {
     alias(libs.plugins.google.services)
 }
 
+configurations.all {
+    exclude(group = "com.intellij", module = "annotations")
+}
+
 android {
     namespace = "com.furiqd.itsalive"
     compileSdk {

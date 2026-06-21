@@ -41,7 +41,6 @@ class FirebaseAuthDataSource(
     override suspend fun saveUserProfile(userDto: UserDto) {
         usersCollection.document(userDto.id)
             .set(userDto, SetOptions.merge())
-            .await()
     }
 
     override suspend fun checkOnboardingStatus(userId: String): Boolean {

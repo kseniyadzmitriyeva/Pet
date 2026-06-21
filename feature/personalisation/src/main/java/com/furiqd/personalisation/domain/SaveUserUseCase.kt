@@ -12,6 +12,6 @@ class SaveUserUseCase @Inject constructor(
             return Result.failure(IllegalArgumentException("Имя пользователя не может быть пустым"))
         }
 
-        return userRepository.completeOnboarding(user)
+        return userRepository.updateUser(user)
     }
 }

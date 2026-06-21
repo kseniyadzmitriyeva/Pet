@@ -1,7 +1,15 @@
 package com.furiqd.local.entity
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "users")
 data class LocalUserEntity(
-    val id: String,
+    @PrimaryKey val id: String,
     val name: String,
-    val avatarId: Int?
+    val avatarId: Int?,
+    val isOnboardingCompleted: Boolean,
+    val roomIds: String?,
+    val email: String?,
+    val nickName: String?
 )
