@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ItsAlive</string>
+    <string name="main_profile_description">View profile</string>
+
+    <string name="room_action_add">Add room</string>
+    <string name="room_action_create_first">Create your first room</string>
+
+    <string name="streak_counter_active">%1$d Day Streak!</string>
+    <string name="streak_description">Daily streak count</string>
+
+    <string name="game_waiting_title">Waiting for the random hour…</string>
+    <string name="game_pet_description">Your pet companion</string>
+
+    <string name="game_active_alert">THE HOUR IS NOW!</string>
+    <string name="game_time_left_suffix">left</string>
+    <string name="game_composite_ready">Your joint art is ready!</string>
+
+    <string name="task_label_user">You</string>
+    <string name="task_label_friend">Friend</string>
+    <string name="task_status_done">Done</string>
+    <string name="task_status_waiting">Waiting</string>
+    <string name="task_format_instruction">Task: Capture something \"%1$s\"</string>
+
+    <string name="action_capture_element">Capture Your Element</string>
+    <string name="action_incite_friend">Nudge Your Friend</string>
+    <string name="action_waiting_friend">Waiting for your friend…</string>
+</resources>

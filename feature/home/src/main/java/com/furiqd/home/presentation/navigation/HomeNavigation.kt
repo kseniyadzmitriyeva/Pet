@@ -3,10 +3,10 @@ package com.furiqd.home.presentation.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-object HomeGraph
+data object HomeGraph
 
 @Serializable
-object MainDestination
+data object MainDestination
 
 @Serializable
-object ProfileDestination
+data object ProfileDestination
