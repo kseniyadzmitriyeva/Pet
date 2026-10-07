@@ -9,4 +9,8 @@ interface RemotePairingDataSource {
     suspend fun executeJoinTransaction(inviteCode: String, friendUserId: String): String
     fun observeRoom(roomId: String): Flow<PairingRoomDto?>
     suspend fun checkActiveRoom(userId: String): String?
+    suspend fun uploadUserPhoto(roomId: String, userId: String, imageBytes: ByteArray)
+    suspend fun sendNudge(roomId: String, senderUserId: String)
+    suspend fun getRoomDetails(roomId: String): PairingRoomDto?
+    fun observeUserRooms(userId: String): Flow<List<PairingRoomDto>>
 }

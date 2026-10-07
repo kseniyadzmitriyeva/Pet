@@ -62,4 +62,43 @@ class RoomRepositoryImpl @Inject constructor(
             roomId
         }
     }
+
+    override suspend fun uploadUserPhoto(
+        roomId: String,
+        userId: String,
+        imageBytes: ByteArray
+    ): Result<Unit> {
+        return runCatching {
+            remoteDataSource.uploadUserPhoto(roomId, userId, imageBytes)
+        }
+    }
+
+    override suspend fun nudgeFriend(
+        roomId: String,
+        senderUserId: String
+    ): Result<Unit> {
+        return runCatching {
+            remoteDataSource.sendNudge(roomId, senderUserId)
+        }
+    }
+
+    override suspend fun fetchRoomDetails(roomId: String): Result<PairingRoom> {
+        return runCatching {
+            val remoteRoomDto = remoteDataSource.getRoomDetails(roomId)
+                ?: throw NoSuchElementException("Room with id $roomId not found")
+
+            val domainRoom = remoteRoomDto.toDomain()
+            val localPetEntity = domainRoom.pet.toEntity()
+            localDataSource.cachePet(localPetEntity)
+
+            domainRoom
+        }
+    }
+
+    override fun observeUserRooms(userId: String): Flow<List<PairingRoom>> {
+        return remoteDataSource.observeUserRooms(userId)
+            .map { dtoList ->
+                dtoList.map { it.toDomain() }
+            }
+    }
 }

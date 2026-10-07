@@ -2,10 +2,12 @@ package com.furiqd.data.di
 
 import com.furiqd.data.repositories.AuthRepositoryImpl
 import com.furiqd.data.repositories.AvatarRepositoryImpl
+import com.furiqd.data.repositories.RoomRepositoryImpl
 import com.furiqd.data.repositories.TokenRepositoryImpl
 import com.furiqd.data.repositories.UserRepositoryImpl
 import com.furiqd.domain.repository.AuthRepository
 import com.furiqd.domain.repository.AvatarRepository
+import com.furiqd.domain.repository.RoomRepository
 import com.furiqd.domain.repository.TokenRepository
 import com.furiqd.domain.repository.UserRepository
 import dagger.Binds
@@ -41,4 +43,10 @@ abstract class RepositoryModule {
     abstract fun bindAvatarRepository(
         avatarRepositoryImpl: AvatarRepositoryImpl
     ): AvatarRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRoomRepository(
+        roomRepositoryImpl: RoomRepositoryImpl
+    ): RoomRepository
 }

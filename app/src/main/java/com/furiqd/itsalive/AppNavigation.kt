@@ -48,7 +48,8 @@ fun AppNavigation(
         )
 
         homeGraph(
-            navController = navController
+            navController = navController,
+            onNavigateToAuth = { navController.navigate(AuthGraph)}
         )
     }
 }
