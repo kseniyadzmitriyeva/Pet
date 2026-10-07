@@ -1,44 +1,28 @@
 package com.furiqd.home.presentation.screen.main
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.furiqd.designsystem.theme.ItsAliveTheme // Подключаем вашу тему
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.furiqd.home.presentation.element.ActiveRoomCard
-import com.furiqd.home.presentation.element.AvatarWithBorder
 import com.furiqd.home.presentation.element.CreateRoomPlaceholderCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     state: MainState,
-    onCameraClick: () -> Unit,
-    onProfileClick: () -> Unit,
-    onCreateRoomClick: () -> Unit,
-    onInciteFriendClick: () -> Unit,
+    onEvent: (MainEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState(pageCount = { state.rooms.size })
@@ -52,7 +36,7 @@ fun MainScreen(
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = onProfileClick) {
+            IconButton(onClick = { onEvent(MainEvent.ProfileClicked)} ) {
                 Icon(
                     modifier = modifier.fillMaxSize(),
                     imageVector = Icons.Default.Person,
@@ -70,14 +54,15 @@ fun MainScreen(
                 is RoomUiModel.Active -> {
                     ActiveRoomCard(
                         room = room,
-                        onCameraClick = onCameraClick,
+                        onCameraClick = {onEvent(MainEvent.CameraClicked)},
                         modifier = modifier,
-                        onInciteFriendClick = onInciteFriendClick
+                        onInciteFriendClick = { onEvent(MainEvent.InciteFriendClicked) }
                     )
                 }
                 is RoomUiModel.Placeholder -> {
                     CreateRoomPlaceholderCard(
-                        onCreateRoomClick = onCreateRoomClick,
+                        onCreateRoomClick = {
+                            onEvent(MainEvent.AddRoomClicked) },
                         modifier = modifier
                     )
                 }
@@ -88,17 +73,31 @@ fun MainScreen(
 @Composable
 fun MainRoute(
     onNavigateToProfile: () -> Unit,
+    onNavigateToAuth: () -> Unit,
+    onNavigateToCreateRoom: () -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
-    // В будущем тут будет: val state by viewModel.uiState.collectAsStateWithLifecycle()
-    // А пока передаем временный фейковый стейт для компиляции:
-    val fakeState = MainState()
+     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is MainEffect.TriggerPetAnimation -> {}
+                is MainEffect.CopyToClipboard -> {}
+                is MainEffect.ShowToast -> {}
+                is MainEffect.NavigateToAuth -> {
+                    onNavigateToAuth()
+                }
+                is MainEffect.NavigateToProfile -> {
+                    onNavigateToProfile()
+                }
+                is MainEffect.CreateRoom -> onNavigateToCreateRoom()
+            }
+        }
+    }
 
     MainScreen(
-        state = fakeState,
-        onCameraClick = { /* TODO: Открыть камеру */ },
-        onProfileClick = onNavigateToProfile,
-        onCreateRoomClick = { /* TODO: Создать комнату */ },
-        onInciteFriendClick = { /* TODO: Пригласить друга */ }
+        state = state,
+        onEvent = viewModel::handleEvent
     )
 }

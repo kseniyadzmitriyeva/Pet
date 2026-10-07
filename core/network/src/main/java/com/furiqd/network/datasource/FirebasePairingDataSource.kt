@@ -3,6 +3,8 @@ package com.furiqd.network.datasource
 import com.furiqd.network.contract.RemotePairingDataSource
 import com.furiqd.network.dto.JointPetDto
 import com.furiqd.network.dto.PairingRoomDto
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.firestore.toObject
@@ -15,6 +17,7 @@ import javax.inject.Inject
 
 class FirebasePairingDataSource @Inject constructor(
     private val firestore: FirebaseFirestore
+    // private val storage: FirebaseStorage
 ) : RemotePairingDataSource {
 
     private val roomsCollection = firestore.collection("rooms")
@@ -118,5 +121,39 @@ class FirebasePairingDataSource @Inject constructor(
         }
 
         return null
+    }
+
+    override suspend fun uploadUserPhoto(roomId: String, userId: String, imageBytes: ByteArray) {
+        roomsCollection.document(roomId)
+            .update("userPhotos.$userId", "url_from_storage_placeholder")
+            .await()
+    }
+
+    override suspend fun sendNudge(roomId: String, senderUserId: String) {
+        roomsCollection.document(roomId)
+            .update(
+                "lastNudgeBy", senderUserId,
+                "lastNudgeTimestamp", FieldValue.serverTimestamp()
+            )
+            .await()
+    }
+
+    override suspend fun getRoomDetails(roomId: String): PairingRoomDto? {
+        val snapshot = roomsCollection.document(roomId).get().await()
+        return if (snapshot.exists()) snapshot.toObject<PairingRoomDto>() else null
+    }
+
+    override fun observeUserRooms(userId: String): Flow<List<PairingRoomDto>> {
+        return roomsCollection
+            .where(
+                Filter.or(
+                    Filter.equalTo("hostId", userId),
+                    Filter.equalTo("friendId", userId)
+                )
+            )
+            .snapshots()
+            .map { querySnapshot ->
+                querySnapshot.documents.mapNotNull { it.toObject<PairingRoomDto>() }
+            }
     }
 }

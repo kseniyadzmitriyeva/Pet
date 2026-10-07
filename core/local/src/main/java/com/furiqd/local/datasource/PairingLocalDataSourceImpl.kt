@@ -29,7 +29,7 @@ class PairingLocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun cachePet(pet: JointPetEntity) {
-        TODO("Not yet implemented")
+        petDao.insertPet(pet)
     }
 
     override suspend fun clearLocalSession() {
