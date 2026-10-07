@@ -96,7 +96,6 @@ fun CreateRoomDialog(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Поле ввода имени
                 Text(
                     text = stringResource(R.string.create_room_name_label),
                     style = MaterialTheme.typography.labelLarge,

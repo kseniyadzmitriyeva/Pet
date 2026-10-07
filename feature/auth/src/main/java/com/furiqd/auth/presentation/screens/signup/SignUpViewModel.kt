@@ -1,5 +1,6 @@
 package com.furiqd.auth.presentation.screens.signup
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.furiqd.auth.domain.usecase.AuthUseCases
@@ -17,8 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val authUseCases: AuthUseCases,
-    private val authHelper: AuthWithGoogleHelper
+    private val authUseCases: AuthUseCases
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SignUpState())
@@ -27,34 +27,47 @@ class SignUpViewModel @Inject constructor(
     private val _uiEffect = Channel<SignUpEffect>()
     val uiEffect = _uiEffect.receiveAsFlow()
 
-    fun handleEvent(event: SignUpEvent, context: android.content.Context? = null) {
+    fun handleEvent(event: SignUpEvent) {
         when (event) {
             is SignUpEvent.NameChanged -> {
-                _uiState.update { it.copy(name = event.name) }
+                _uiState.update { state ->
+                    val newState = state.copy(name = event.name)
+                    newState.copy(isSignUpEnabled = newState.canSignUp())
+                }
             }
             is SignUpEvent.EmailChanged -> {
                 val error = InputValidator.validateEmail(event.email)
-                _uiState.update { it.copy(
-                    email = event.email,
-                    emailError = error,
-                    isSignUpEnabled = it.password.isNotBlank() && error == null) }
+                if (error != null) {
+                    Log.d("Sign Up","Email is not valid $error")
+                }
+                _uiState.update { state ->
+                    val newState = state.copy(email = event.email, emailError = error)
+                    newState.copy(isSignUpEnabled = newState.canSignUp())
+                }
             }
             is SignUpEvent.PasswordChanged -> {
                 val error = InputValidator.validatePassword(event.password)
-                _uiState.update { it.copy(
-                    password = event.password,
-                    passwordError = error,
-                    isSignUpEnabled = it.email.isNotBlank() && error == null) }
+                if (error != null) {
+                    Log.d("Sign Up","Password is not valid $error")
+                }
+                _uiState.update { state ->
+                    val newState = state.copy(password = event.password, passwordError = error)
+                    newState.copy(isSignUpEnabled = newState.canSignUp())
+                }
             }
             is SignUpEvent.PrivacyChecked -> {
-                _uiState.update { it.copy(isPrivacyChecked = event.isChecked) }
-            }
-            SignUpEvent.GoogleClicked -> {
-                context?.let { signInWithGoogle(it) }
+                _uiState.update { state ->
+                    Log.d("Sign Up","Privacy checked")
+                    val newState = state.copy(isPrivacyChecked = event.isChecked)
+                    newState.copy(isSignUpEnabled = newState.canSignUp())
+                }
             }
             SignUpEvent.SignUpClicked -> {
                 _uiState.update { it.copy(isLoading = true) }
                 signUpWithEmail()
+            }
+            SignUpEvent.GoogleClicked -> {
+                viewModelScope.launch { _uiEffect.send(SignUpEffect.LaunchGoogleAuth) }
             }
             SignUpEvent.BackClicked -> {
                 viewModelScope.launch { _uiEffect.send(SignUpEffect.NavigateBack) }
@@ -75,6 +88,7 @@ class SignUpViewModel @Inject constructor(
             result.onSuccess { isOnboardingCompleted ->
                 _uiState.update { it.copy(isLoading = false) }
                 _uiEffect.send(SignUpEffect.NavigateToWelcome(isOnboardingCompleted))
+                Log.d("Sign Up","Sign up success")
             }.onFailure { error ->
                 _uiState.update { it.copy(isLoading = false) }
                 _uiEffect.send(SignUpEffect.ShowError(error.message ?: "Неверный логин или пароль"))
@@ -82,27 +96,33 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private fun signInWithGoogle(context: android.content.Context) {
+    fun onGoogleTokenReceived(idToken: String) {
         _uiState.update { it.copy(isLoading = true) }
-
         viewModelScope.launch {
-            when (val uiResult = authHelper.launchAuthUi(context)) {
-                is AuthUiResult.GoogleSuccess -> {
-                    val domainResult = authUseCases.signInWithGoogle(uiResult.idToken)
-
-                    domainResult.onSuccess { isOnboardingCompleted ->
-                        _uiState.update { it.copy(isLoading = false) }
-                        _uiEffect.send(SignUpEffect.NavigateToWelcome(isOnboardingCompleted))
-                    }.onFailure { error ->
-                        _uiState.update { it.copy(isLoading = false) }
-                        _uiEffect.send(SignUpEffect.ShowError(error.message ?: "Unknown error"))
-                    }
-                }
-                is AuthUiResult.Failure -> {
+            authUseCases.signInWithGoogle(idToken)
+                .onSuccess { isOnboardingCompleted ->
                     _uiState.update { it.copy(isLoading = false) }
-                    _uiEffect.send(SignUpEffect.ShowError(uiResult.error.message ?: "Unknown error"))
+                    _uiEffect.send(SignUpEffect.NavigateToWelcome(isOnboardingCompleted))
                 }
-            }
+                .onFailure { error ->
+                    _uiState.update { it.copy(isLoading = false) }
+                    _uiEffect.send(SignUpEffect.ShowError(error.message ?: "Unknown error"))
+                }
         }
+    }
+
+    fun onGoogleAuthFailed(errorMessage: String) {
+        _uiState.update { it.copy(isLoading = false) }
+        viewModelScope.launch {
+            _uiEffect.send(SignUpEffect.ShowError(errorMessage))
+        }
+    }
+
+    private fun SignUpState.canSignUp(): Boolean {
+        return email.isNotBlank() &&
+                emailError == null &&
+                password.isNotBlank() &&
+                passwordError == null &&
+                isPrivacyChecked
     }
 }

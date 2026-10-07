@@ -9,8 +9,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -21,7 +25,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.furiqd.auth.R
 import com.furiqd.auth.presentation.elements.BackButton
+import com.furiqd.auth.presentation.elements.ErrorSnackbar
 import com.furiqd.auth.presentation.elements.LoginWithGoogleButton
+import com.furiqd.auth.presentation.helper.AuthWithGoogleHelper
+import com.furiqd.auth.presentation.helper.asString
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(
@@ -72,6 +80,17 @@ fun SignUpScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
+            value = state.name,
+            onValueChange = { onEvent(SignUpEvent.NameChanged(it)) },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text(stringResource(id = R.string.auth_placeholder_name)) },
+            shape = RoundedCornerShape(16.dp),
+            singleLine = true
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
             value = state.email,
             onValueChange = { onEvent(SignUpEvent.EmailChanged(it)) },
             modifier = Modifier.fillMaxWidth(),
@@ -79,6 +98,14 @@ fun SignUpScreen(
             shape = RoundedCornerShape(16.dp),
             singleLine = true
         )
+
+        if (state.emailError != null) {
+            Text(
+                text = state.emailError.asString(),
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -91,6 +118,14 @@ fun SignUpScreen(
             singleLine = true,
             visualTransformation = PasswordVisualTransformation()
         )
+
+        if (state.passwordError != null) {
+            Text(
+                text = state.passwordError.asString(),
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -168,9 +203,13 @@ fun SignUpRoute(
     onNavigateToWelcome: (Boolean) -> Unit,
     onNavigateBack: () -> Unit,
     onNavigateToSignIn: () -> Unit,
-    viewModel: SignUpViewModel = hiltViewModel()
+    viewModel: SignUpViewModel = hiltViewModel(),
+    authHelper: AuthWithGoogleHelper = remember { AuthWithGoogleHelper() }
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { effect ->
@@ -178,13 +217,44 @@ fun SignUpRoute(
                 is SignUpEffect.NavigateToWelcome -> onNavigateToWelcome(effect.isOnboardingCompleted)
                 SignUpEffect.NavigateBack -> onNavigateBack()
                 SignUpEffect.NavigateToSignIn -> onNavigateToSignIn()
-                is SignUpEffect.ShowError -> { /* Показать Snackbar */ }
+                is SignUpEffect.ShowError -> {
+                    snackbarHostState.showSnackbar(
+                        message = effect.message,
+                        withDismissAction = true
+                    )
+                }
+                SignUpEffect.LaunchGoogleAuth -> {
+                    scope.launch {
+                        when (val result = authHelper.launchAuthUi(context)) {
+                            is AuthWithGoogleHelper.AuthUiResult.GoogleSuccess -> {
+                                viewModel.onGoogleTokenReceived(result.idToken)
+                            }
+                            is AuthWithGoogleHelper.AuthUiResult.Failure -> {
+                                viewModel.onGoogleAuthFailed(
+                                    result.error.message ?: "Google Auth Failed"
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 
-    SignUpScreen(
-        state = state,
-        onEvent = viewModel::handleEvent
-    )
+    Box(modifier = Modifier.fillMaxSize()) {
+        SignUpScreen(
+            state = state,
+            onEvent = viewModel::handleEvent,
+            modifier = Modifier.fillMaxSize()
+        )
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .navigationBarsPadding()
+                .padding(16.dp)
+        ) { data ->
+            ErrorSnackbar(snackbarData = data)
+        }
+    }
 }

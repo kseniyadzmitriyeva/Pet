@@ -1,6 +1,7 @@
 package com.furiqd.auth.presentation.screens.signup
 
 sealed interface SignUpEffect {
+    object LaunchGoogleAuth : SignUpEffect
     data object NavigateBack : SignUpEffect
     data class NavigateToWelcome(val isOnboardingCompleted: Boolean) : SignUpEffect
     data object NavigateToSignIn : SignUpEffect

@@ -3,6 +3,7 @@ package com.furiqd.home.presentation.screen.createroom
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.furiqd.home.domain.usecase.CreateRoomUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class CreateRoomViewModel@Inject constructor(
     private val createRoomUseCase: CreateRoomUseCase
 ) : ViewModel() {
