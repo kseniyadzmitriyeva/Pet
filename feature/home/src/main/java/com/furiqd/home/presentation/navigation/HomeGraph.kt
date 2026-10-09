@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.furiqd.home.presentation.screen.createroom.CreateRoomRoute
 import com.furiqd.home.presentation.screen.main.MainRoute
+import com.furiqd.home.presentation.screen.profile.ProfileRoute
 
 fun NavGraphBuilder.homeGraph(navController: NavController,
                               onNavigateToAuth: () -> Unit) {
@@ -21,6 +22,14 @@ fun NavGraphBuilder.homeGraph(navController: NavController,
         composable<CreateRoomDestination> {
             CreateRoomRoute(
                 onNavigateToMain = { navController.navigate(MainDestination) }
+            )
+        }
+
+        composable<ProfileDestination> {
+            ProfileRoute(
+                onNavigateToMain = { navController.navigate(MainDestination) },
+                onNavigateToAuth = { onNavigateToAuth() },
+                onNavigateToEditProfile = {}
             )
         }
     }
