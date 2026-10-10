@@ -13,15 +13,13 @@ configurations.all {
 
 android {
     namespace = "com.furiqd.itsalive"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.furiqd.itsalive"
         minSdk = 26
-        targetSdk = 36
-        versionCode = 1
+        targetSdk = 37
+        versionCode = 2
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

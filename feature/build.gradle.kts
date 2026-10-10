@@ -4,9 +4,7 @@ plugins {
 
 android {
     namespace = "com.furiqd.feature"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 26

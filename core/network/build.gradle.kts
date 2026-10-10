@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.ksp)
@@ -7,8 +10,9 @@ plugins {
 
 android {
     namespace = "com.furiqd.network"
-    compileSdk {
-        version = release(36)
+    compileSdk = 37
+    buildFeatures {
+        buildConfig = true
     }
 
     defaultConfig {
@@ -16,6 +20,15 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        val localProperties = Properties().apply {
+            val file = rootProject.file("local.properties")
+            if (file.exists()) {
+                FileInputStream(file).use { load(it) }
+            }
+        }
+        val workerEndpoint = localProperties["WORKER_ENDPOINT"] as? String ?: "https://r2-worker.ksenydmitri.workers.dev"
+        buildConfigField("String", "WORKER_ENDPOINT", "\"$workerEndpoint\"")
     }
 
     buildTypes {
@@ -43,6 +56,7 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore)
+    implementation(libs.okhttp)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)

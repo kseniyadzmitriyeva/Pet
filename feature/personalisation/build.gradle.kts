@@ -8,9 +8,7 @@ plugins {
 
 android {
     namespace = "com.furiqd.personalisation"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 26
