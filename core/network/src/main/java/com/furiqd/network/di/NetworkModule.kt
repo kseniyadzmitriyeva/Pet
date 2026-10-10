@@ -1,13 +1,13 @@
 package com.furiqd.network.di
 
-import com.furiqd.network.datasource.FirebaseAuthDataSource
-import com.furiqd.network.contract.RemoteAuthDataSource
+import com.furiqd.network.BuildConfig
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -24,5 +24,11 @@ object NetworkModule {
     @Singleton
     fun provideFirebaseFirestore(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
+    }
+
+    @Provides
+    @Named("workerEndpoint")
+    fun provideWorkerEndpoint(): String {
+        return BuildConfig.WORKER_ENDPOINT
     }
 }

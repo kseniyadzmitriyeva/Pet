@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class LocalUserEntity(
     @PrimaryKey val id: String,
     val name: String,
-    val avatarId: Int?,
+    val avatarId: String?,
     val isOnboardingCompleted: Boolean,
     val roomIds: String?,
     val email: String?,

@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -30,36 +32,27 @@ class UserRepositoryImpl @Inject constructor(
     @ApplicationScope private val scope: CoroutineScope
 ) : UserRepository {
 
-    private val _sessionState = MutableStateFlow<UserSessionState>(UserSessionState.Loading)
-    override val sessionState: StateFlow<UserSessionState> = _sessionState.asStateFlow()
-
-    init {
-        observeAuthChanges()
-    }
-
-    private fun observeAuthChanges() {
-        remoteDataSource.currentUserIdFlow
-            .flatMapLatest { userId ->
-                if (userId == null) {
-                    localDataSource.clearLocalData()
-                    flowOf(UserSessionState.NotAuthorized)
-                } else {
-                    localDataSource.observeUser().map { localEntity ->
-                        val user = localEntity?.toDomain()
-                        Log.e("user",user.toString())
-                        when {
-                            user == null -> UserSessionState.Loading
-                            user.isOnboardingCompleted -> UserSessionState.FullyAuthorized
-                            else -> UserSessionState.NeedsOnboarding
-                        }
+    override val sessionState: StateFlow<UserSessionState> = remoteDataSource.currentUserIdFlow
+        .flatMapLatest { userId ->
+            if (userId == null) {
+                localDataSource.clearLocalData()
+                flowOf(UserSessionState.NotAuthorized)
+            } else {
+                localDataSource.observeUser().map { localEntity ->
+                    val user = localEntity?.toDomain()
+                    when {
+                        user == null -> UserSessionState.Loading
+                        user.isOnboardingCompleted -> UserSessionState.FullyAuthorized
+                        else -> UserSessionState.NeedsOnboarding
                     }
                 }
             }
-            .onEach { state ->
-                _sessionState.value = state
-            }
-            .launchIn(scope)
-    }
+        }
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.Eagerly,
+            initialValue = UserSessionState.Loading
+        )
 
     override fun observeUser(): Flow<User?> {
         return localDataSource.observeUser().map { it?.toDomain() }

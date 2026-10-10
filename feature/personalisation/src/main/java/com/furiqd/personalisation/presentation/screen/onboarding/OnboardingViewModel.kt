@@ -82,7 +82,7 @@ class OnboardingViewModel @Inject constructor(
                 email = currentUser?.email,
                 nickName = _uiState.value.nickname.trim(),
                 roomIds = currentUser?.roomIds ?: emptyList(),
-                avatarId = _uiState.value.selectedAvatarId,
+                avatarId = _uiState.value.selectedAvatarId.toString(),
                 name = _uiState.value.name.trim(),
                 isOnboardingCompleted = true
             )

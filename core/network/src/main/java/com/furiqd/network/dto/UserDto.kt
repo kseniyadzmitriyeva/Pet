@@ -7,7 +7,7 @@ data class UserDto(
     @DocumentId
     var id: String = "",
     var name: String = "",
-    var avatarId: Int? = null,
+    var avatarId: String? = null,
     @get:PropertyName("isOnboardingCompleted")
     @set:PropertyName("isOnboardingCompleted")
     @PropertyName("isOnboardingCompleted")
