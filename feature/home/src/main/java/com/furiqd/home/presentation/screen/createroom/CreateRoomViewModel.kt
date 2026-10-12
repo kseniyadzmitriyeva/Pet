@@ -8,6 +8,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,10 +26,10 @@ class CreateRoomViewModel@Inject constructor(
         when(event){
             is CreateRoomEvent.CreateRoomClicked -> {
                 viewModelScope.launch {
-                    _uiState.value.copy(isLoading = true)
+                    _uiState.update { it.copy(isLoading = true) }
                     val result = createRoomUseCase.invoke(
                         uiState.value.petName,
-                        uiState.value.petEgg)
+                        uiState.value.petEggType)
                     result.onSuccess {
                         _effect.trySend(CreateRoomEffect.NavigateToMain)
                     }
@@ -43,22 +44,20 @@ class CreateRoomViewModel@Inject constructor(
                 _effect.trySend(CreateRoomEffect.NavigateToMain)
             }
             is CreateRoomEvent.NameChanged -> {
-                _uiState.value.copy(
-                    petName = event.name
-                )
+                _uiState.update { it.copy( petName = event.name) }
             }
             is CreateRoomEvent.NextEggClicked -> {
-                val totalAvatars = CreateRoomState.petAvatars.size
+                val eggs = CreateRoomState.availableEggs
 
                 _uiState.value = uiState.value.copy(
-                    petEgg = (uiState.value.petEgg + 1) % totalAvatars
+                    petEggType = eggs[(uiState.value.petEggType.ordinal + 1) % eggs.size]
                 )
             }
             is CreateRoomEvent.PreviousEggClicked -> {
-                val totalAvatars = CreateRoomState.petAvatars.size
+                val eggs = CreateRoomState.availableEggs
 
                 _uiState.value = uiState.value.copy(
-                    petEgg = (uiState.value.petEgg - 1 + totalAvatars) % totalAvatars
+                    petEggType = eggs[(uiState.value.petEggType.ordinal - 1) % eggs.size]
                 )
             }
         }

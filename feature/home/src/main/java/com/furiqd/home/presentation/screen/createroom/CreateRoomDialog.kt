@@ -1,5 +1,6 @@
 package com.furiqd.home.presentation.screen.createroom
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -22,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.furiqd.designsystem.config.PetEggConfig
 import com.furiqd.home.R
-import com.furiqd.home.presentation.screen.createroom.CreateRoomState.Companion.petAvatars
 
 @Composable
 fun CreateRoomDialog(
@@ -77,11 +78,10 @@ fun CreateRoomDialog(
                             .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)),
                         contentAlignment = Alignment.Center
                     ) {
-                        val currentAvatarRes = CreateRoomState.petAvatars.getOrNull(state.petEgg - 1)
-                            ?: com.furiqd.designsystem.R.drawable.green_egg
+                        val eggDrawableRes = PetEggConfig.getDrawableByType(state.petEggType)
 
                         Image(
-                            painter = painterResource(id = currentAvatarRes),
+                            painter = painterResource(id = eggDrawableRes),
                             contentDescription = stringResource(R.string.create_room_pet_description),
                             modifier = Modifier.size(80.dp)
                         )
@@ -107,7 +107,10 @@ fun CreateRoomDialog(
 
                 OutlinedTextField(
                     value = name,
-                    onValueChange = { name = it },
+                    onValueChange = {
+                        name = it
+                        onEvent(CreateRoomEvent.NameChanged(name))
+                        Log.d("CreateRoom", "Name changed to $name, state: $state")},
                     placeholder = { Text(stringResource(R.string.create_room_name_hint)) },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
@@ -122,7 +125,7 @@ fun CreateRoomDialog(
 
                 Button(
                     onClick = { onEvent(CreateRoomEvent
-                        .CreateRoomClicked(name, petAvatars[currentPetIndex])) },
+                        .CreateRoomClicked(state.petName, state.petEggType)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),

@@ -1,6 +1,7 @@
 package com.furiqd.data.mapper
 
 import com.furiqd.domain.model.JointPet
+import com.furiqd.domain.model.PetEggType
 import com.furiqd.local.entity.JointPetEntity
 import com.furiqd.network.dto.JointPetDto
 import java.util.Date
@@ -11,7 +12,9 @@ fun JointPetEntity.toDomain() = JointPet(
     level = level,
     experience = experience,
     stage = stage,
-    hatchedAt = hatchedAt?.let { Date(it) }
+    hatchedAt = hatchedAt?.let { Date(it)
+
+    }
 )
 
 fun JointPet.toEntity() = JointPetEntity(
@@ -20,7 +23,8 @@ fun JointPet.toEntity() = JointPetEntity(
     level = level,
     experience = experience,
     stage = stage,
-    hatchedAt = hatchedAt?.time
+    hatchedAt = hatchedAt?.time,
+    petEggType = petEggType.id
 )
 
 fun JointPetDto.toDomain(): JointPet {
@@ -30,7 +34,8 @@ fun JointPetDto.toDomain(): JointPet {
         level = this.level,
         experience = this.experience,
         stage = this.stage,
-        hatchedAt = this.hatchedAt
+        hatchedAt = this.hatchedAt,
+        petEggType = PetEggType.fromId(this.petEggType)
     )
 }
 fun JointPet.toDto(): JointPetDto {
@@ -40,6 +45,7 @@ fun JointPet.toDto(): JointPetDto {
         level = this.level,
         experience = this.experience,
         stage = this.stage,
-        hatchedAt = this.hatchedAt
+        hatchedAt = this.hatchedAt,
+        petEggType = this.petEggType.id
     )
 }

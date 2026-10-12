@@ -1,7 +1,12 @@
 package com.furiqd.home.presentation.screen.createroom
 
+import com.furiqd.domain.model.PetEggType
+
 sealed interface CreateRoomEvent {
-    data class CreateRoomClicked(val name: String, val avatarId: Int) : CreateRoomEvent
+    data class CreateRoomClicked(
+        val petName: String,
+        val petEggType: PetEggType
+    ) : CreateRoomEvent
     object DismissDialog : CreateRoomEvent
     data class NameChanged(val name: String) : CreateRoomEvent
     object NextEggClicked : CreateRoomEvent

@@ -10,5 +10,6 @@ data class JointPetEntity(
     val level: Int,
     val experience: Int,
     val stage: String,
-    val hatchedAt: Long?
+    val hatchedAt: Long?,
+    val petEggType: Int
 )

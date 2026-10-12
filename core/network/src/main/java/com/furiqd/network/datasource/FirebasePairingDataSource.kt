@@ -1,5 +1,7 @@
 package com.furiqd.network.datasource
 
+import android.util.Log
+import com.furiqd.domain.model.PetEggType
 import com.furiqd.network.contract.RemotePairingDataSource
 import com.furiqd.network.dto.JointPetDto
 import com.furiqd.network.dto.PairingRoomDto
@@ -17,7 +19,6 @@ import javax.inject.Inject
 
 class FirebasePairingDataSource @Inject constructor(
     private val firestore: FirebaseFirestore
-    // private val storage: FirebaseStorage
 ) : RemotePairingDataSource {
 
     private val roomsCollection = firestore.collection("rooms")
@@ -32,7 +33,11 @@ class FirebasePairingDataSource @Inject constructor(
         return !querySnapshot.isEmpty
     }
 
-    override suspend fun createRoom(hostUserId: String, uniqueCode: String): String {
+    override suspend fun createRoom(hostUserId: String,
+                                    uniqueCode: String,
+                                    petName: String,
+                                    petEggType: PetEggType
+    ): String {
         val newRoomDto = PairingRoomDto(
             code = uniqueCode,
             hostId = hostUserId,
@@ -41,13 +46,16 @@ class FirebasePairingDataSource @Inject constructor(
             createdAt = Date(),
             pet = JointPetDto(
                 id = UUID.randomUUID().toString(),
-                name = "Egg",
+                name = petName,
+                petEggType = petEggType.id,
                 stage = "EGG",
                 level = 1,
                 experience = 0,
                 hatchedAt = null
             )
         )
+
+        Log.d("FirebasePairingDataSource", "Creating room with data: $newRoomDto,$petName, $petEggType")
 
         val documentRef = roomsCollection.add(newRoomDto).await()
         return documentRef.id

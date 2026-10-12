@@ -9,5 +9,6 @@ data class JointPet(
     val level: Int = 1,
     val experience: Int = 0,
     val stage: String = "EGG",
-    val hatchedAt: Date? = null
+    val hatchedAt: Date? = null,
+    val petEggType: PetEggType = PetEggType.GREEN
 )

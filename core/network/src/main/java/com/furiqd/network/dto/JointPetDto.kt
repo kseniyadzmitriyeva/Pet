@@ -8,5 +8,6 @@ data class JointPetDto(
     val level: Int = 1,
     val experience: Int = 0,
     val stage: String = "EGG",
-    val hatchedAt: Date? = null
+    val hatchedAt: Date? = null,
+    val petEggType: Int = 1
 )

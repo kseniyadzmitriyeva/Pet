@@ -3,6 +3,7 @@ package com.furiqd.data.repositories
 import com.furiqd.data.mapper.toDomain
 import com.furiqd.data.mapper.toEntity
 import com.furiqd.domain.model.PairingRoom
+import com.furiqd.domain.model.PetEggType
 import com.furiqd.domain.repository.RoomRepository
 import com.furiqd.local.contract.PairingLocalDataSource
 import com.furiqd.network.contract.RemotePairingDataSource
@@ -15,13 +16,15 @@ class RoomRepositoryImpl @Inject constructor(
     private val localDataSource: PairingLocalDataSource
 ) : RoomRepository {
 
-    override suspend fun createRoom(hostUserId: String): Result<String> {
+    override suspend fun createRoom(hostUserId: String,
+                                    petName: String,
+                                    petEggType: PetEggType): Result<String> {
         return runCatching {
             var uniqueCode: String
             do {
                 uniqueCode = (100000..999999).random().toString()
             } while (remoteDataSource.isCodeExisting(uniqueCode))
-            val roomId = remoteDataSource.createRoom(hostUserId, uniqueCode)
+            val roomId = remoteDataSource.createRoom(hostUserId, uniqueCode, petName, petEggType)
             localDataSource.saveRoomId(roomId)
 
             roomId
