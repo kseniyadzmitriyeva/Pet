@@ -80,17 +80,6 @@ fun SignUpScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = state.name,
-            onValueChange = { onEvent(SignUpEvent.NameChanged(it)) },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(stringResource(id = R.string.auth_placeholder_name)) },
-            shape = RoundedCornerShape(16.dp),
-            singleLine = true
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
             value = state.email,
             onValueChange = { onEvent(SignUpEvent.EmailChanged(it)) },
             modifier = Modifier.fillMaxWidth(),

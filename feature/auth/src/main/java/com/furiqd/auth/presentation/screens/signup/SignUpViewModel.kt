@@ -29,12 +29,6 @@ class SignUpViewModel @Inject constructor(
 
     fun handleEvent(event: SignUpEvent) {
         when (event) {
-            is SignUpEvent.NameChanged -> {
-                _uiState.update { state ->
-                    val newState = state.copy(name = event.name)
-                    newState.copy(isSignUpEnabled = newState.canSignUp())
-                }
-            }
             is SignUpEvent.EmailChanged -> {
                 val error = InputValidator.validateEmail(event.email)
                 if (error != null) {
