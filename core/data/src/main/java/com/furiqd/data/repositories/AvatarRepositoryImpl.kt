@@ -7,7 +7,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
-class AvatarRepositoryImpl @Inject constructor() : AvatarRepository {
+class AvatarRepositoryImpl @Inject constructor(
+) : AvatarRepository {
 
     private val builtInAvatars = listOf(
         Avatar(id = 1, name = "Boy 1", type = AvatarType.Resource(1)),
@@ -23,12 +24,10 @@ class AvatarRepositoryImpl @Inject constructor() : AvatarRepository {
     }
 
     override suspend fun getAvatarById(id: Int?): Avatar {
-        return builtInAvatars.find { it.id == id }
-            ?: Avatar(id = 11, name = "Default", type = AvatarType.Resource(11))
+        TODO("Not yet implemented")
     }
 
-    override suspend fun uploadCustomAvatar(filePath: String): Result<Avatar> {
-        return Result.failure(UnsupportedOperationException(
-            "Custom avatars will be available in future updates"))
+    override suspend fun saveAvatar(avatarBytes: ByteArray): Result<Unit> {
+        TODO("Not yet implemented")
     }
 }

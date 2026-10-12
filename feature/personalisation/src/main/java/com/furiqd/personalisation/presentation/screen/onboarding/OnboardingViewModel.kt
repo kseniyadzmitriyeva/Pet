@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.furiqd.domain.model.User
 import com.furiqd.domain.repository.UserRepository
+import com.furiqd.domain.usecase.UpdateAvatarUseCase
 import com.furiqd.personalisation.domain.GetAvatarsUseCase
 import com.furiqd.personalisation.domain.SaveUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +22,8 @@ import javax.inject.Inject
 class OnboardingViewModel @Inject constructor(
     private val getAvailableAvatarsUseCase: GetAvatarsUseCase,
     private val saveUserUseCase: SaveUserUseCase,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val updateAvatarUseCase: UpdateAvatarUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(OnboardingState())
@@ -41,7 +43,7 @@ class OnboardingViewModel @Inject constructor(
                     currentState.copy(
                         nickname = event.nickname,
                         isNicknameError = event.nickname.isNotEmpty() && isLengthError,
-                        isNextButtonEnabled = !isLengthError && currentState.selectedAvatarId != null
+                        isNextButtonEnabled = !isLengthError && (currentState.selectedAvatarId.isNotEmpty() || currentState.localAvatarUri != null)
                     )
                 }
             }
@@ -51,39 +53,70 @@ class OnboardingViewModel @Inject constructor(
                     currentState.copy(
                         name = event.name,
                         isNameError = event.name.isNotEmpty() && isLengthError,
-                        isNextButtonEnabled = !isLengthError && currentState.selectedAvatarId != null
+                        isNextButtonEnabled = !isLengthError && (currentState.selectedAvatarId.isNotEmpty() || currentState.localAvatarUri != null)
                     )
                 }
             }
-            is OnboardingEvent.AvatarSelected -> {
+            is OnboardingEvent.CommonAvatarSelected -> {
                 _uiState.update { currentState ->
                     currentState.copy(
-                        selectedAvatarId = event.avatarId,
+                        selectedAvatarId = event.avatarId.toString(),
+                        localAvatarUri = null,
+                        selectedCustomBytes = null,
                         isNextButtonEnabled = currentState.nickname.length in 2..15
                     )
                 }
             }
+            is OnboardingEvent.UploadCustomAvatarClicked -> {
+                viewModelScope.launch {
+                    _effect.send(OnboardingEffect.UploadAvatar)
+                }
+            }
+
+            is OnboardingEvent.CustomAvatarSelected -> {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        localAvatarUri = event.uri,
+                        selectedCustomBytes = event.bytes,
+                        selectedAvatarId = "",
+                        isNextButtonEnabled = currentState.nickname.length in 2..15
+                    )
+                }
+            }
+
             OnboardingEvent.NextClicked -> {
                 saveUserProfile()
             }
         }
     }
-
     private fun saveUserProfile() {
         if (_uiState.value.isLoading) return
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, isNextButtonEnabled = false) }
 
+            val currentState = _uiState.value
+            val customBytes = currentState.selectedCustomBytes
+            val finalAvatarId: String = if (customBytes != null) {
+                val uploadResult = updateAvatarUseCase.invoke(customBytes)
+
+                if (uploadResult.isFailure) {
+                    _uiState.update { it.copy(isLoading = false, isNextButtonEnabled = true) }
+                    _effect.send(OnboardingEffect.ShowError("Не удалось загрузить аватарку"))
+                    return@launch
+                }
+                uploadResult.getOrThrow()
+            } else {
+                currentState.selectedAvatarId
+            }
             val currentUser = userRepository.getUser()
-            
             val updatedUser = User(
                 id = currentUser?.id ?: "",
                 email = currentUser?.email,
-                nickName = _uiState.value.nickname.trim(),
+                nickName = currentState.nickname.trim(),
                 roomIds = currentUser?.roomIds ?: emptyList(),
-                avatarId = _uiState.value.selectedAvatarId.toString(),
-                name = _uiState.value.name.trim(),
+                avatarId = finalAvatarId,
+                name = currentState.name.trim(),
                 isOnboardingCompleted = true
             )
 
@@ -94,13 +127,9 @@ class OnboardingViewModel @Inject constructor(
                 }
                 .onFailure { exception ->
                     _uiState.update { currentState ->
-                        currentState.copy(
-                            isLoading = false,
-                            isNextButtonEnabled = true
-                        )
+                        currentState.copy(isLoading = false, isNextButtonEnabled = true)
                     }
-                    val errorMessage = exception.localizedMessage ?: "Не удалось сохранить профиль"
-                    _effect.send(OnboardingEffect.ShowError(errorMessage))
+                    _effect.send(OnboardingEffect.ShowError(exception.localizedMessage ?: "Ошибка сохранения"))
                 }
         }
     }

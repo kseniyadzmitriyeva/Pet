@@ -48,6 +48,8 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.foundation)
+    implementation(libs.room.ktx)
+    implementation(libs.coil.compose)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.appcompat)

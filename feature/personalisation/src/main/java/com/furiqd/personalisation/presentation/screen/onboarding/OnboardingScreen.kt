@@ -1,5 +1,9 @@
 package com.furiqd.personalisation.presentation.screen.onboarding
 
+import android.net.Uri
+import android.provider.OpenableColumns
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,12 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.room.util.getColumnIndex
+import coil.compose.AsyncImage
 import com.furiqd.designsystem.config.AvatarConfig
 import com.furiqd.personalisation.R
 import com.furiqd.personalisation.presentation.element.AvatarSelectionDialog
@@ -33,7 +40,6 @@ fun OnboardingScreen(
 ) {
     var isDialogVisible by remember { mutableStateOf(false) }
 
-    val selectedAvatarRes = AvatarConfig.getDrawableById(state.selectedAvatarId)
     val isAvatarChosen = state.selectedAvatarId != null
 
     Scaffold(
@@ -73,10 +79,30 @@ fun OnboardingScreen(
                         .clickable { isDialogVisible = true },
                     contentAlignment = Alignment.Center
                 ) {
-                    Image(
-                        painter = painterResource(id = selectedAvatarRes),
+                    val avatarModel = remember(state.localAvatarUri, state.selectedAvatarId) {
+                        when {
+                            !state.localAvatarUri.isNullOrBlank() -> {
+                                state.localAvatarUri
+                            }
+                            state.selectedAvatarId.isNotBlank() -> {
+                                val intId = state.selectedAvatarId.toIntOrNull()
+                                if (intId != null && intId != 0) {
+                                    AvatarConfig.getDrawableById(intId)
+                                } else {
+                                    state.selectedAvatarId
+                                }
+                            }
+                            else -> {
+                                com.furiqd.designsystem.R.drawable.avatar_girl_svgrepo_com__11_
+                            }
+                        }
+                    }
+
+                    AsyncImage(
+                        model = avatarModel,
                         contentDescription = "Selected Avatar Preview",
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = androidx.compose.ui.layout.ContentScale.Crop
                     )
                 }
 
@@ -147,10 +173,10 @@ fun OnboardingScreen(
         AvatarSelectionDialog(
             currentSelectedId = state.selectedAvatarId,
             onAvatarSelected = { id ->
-                onEvent(OnboardingEvent.AvatarSelected(id))
+                onEvent(OnboardingEvent.CommonAvatarSelected(id))
             },
             onUploadCustomClick = {
-                // Пока заглушка
+                onEvent(OnboardingEvent.UploadCustomAvatarClicked)
             },
             onDismissRequest = {
                 isDialogVisible = false
@@ -165,17 +191,48 @@ fun OnboardingRoute(
     viewModel: OnboardingViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val maxFileSize = 5 * 1024 * 1024 // 5 MB
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { selectedUri ->
+            val fileSize = context.contentResolver.query(
+                selectedUri, null, null, null, null
+            )?.use { cursor ->
+                val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+                cursor.moveToFirst()
+                if (sizeIndex != -1) cursor.getLong(sizeIndex) else 0L
+            } ?: 0L
+
+            if (fileSize > maxFileSize) {
+                return@let
+            }
+
+            val bytes = context.contentResolver.openInputStream(selectedUri)?.use { it.readBytes() }
+            if (bytes != null) {
+                viewModel.handleEvent(OnboardingEvent.CustomAvatarSelected(bytes, selectedUri.toString()))
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is OnboardingEffect.NavigateToNext -> onNavigateToNext()
+                is OnboardingEffect.ShowError -> {}
+                is OnboardingEffect.UploadAvatar -> {
+                    imagePickerLauncher.launch("image/*")
+                }
+            }
+        }
+    }
 
     OnboardingScreen(
         state = state,
         onEvent = { event ->
-            when (event) {
-                is OnboardingEvent.NextClicked -> {
-                    viewModel.handleEvent(event)
-                    onNavigateToNext()
-                }
-                else -> viewModel.handleEvent(event)
-            }
+            viewModel.handleEvent(event)
         }
     )
 }

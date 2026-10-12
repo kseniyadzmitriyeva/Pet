@@ -34,7 +34,7 @@ import com.furiqd.personalisation.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AvatarSelectionDialog(
-    currentSelectedId: Int?,
+    currentSelectedId: String,
     onAvatarSelected: (Int) -> Unit,
     onUploadCustomClick: () -> Unit,
     onDismissRequest: () -> Unit,
@@ -79,7 +79,7 @@ fun AvatarSelectionDialog(
                         .heightIn(max = 240.dp)
                 ) {
                     items(AvatarConfig.avatars, key = { it.id }) { avatar ->
-                        val isSelected = avatar.id == currentSelectedId
+                        val isSelected = avatar.id.toString() == currentSelectedId
 
                         Box(
                             modifier = Modifier
@@ -180,7 +180,7 @@ fun AvatarSelectionDialogPreview() {
             var selectedId by remember { mutableStateOf<Int?>(1) }
 
             AvatarSelectionDialog(
-                currentSelectedId = selectedId,
+                currentSelectedId = selectedId.toString(),
                 onAvatarSelected = { clickedId ->
                     selectedId = clickedId
                 },
