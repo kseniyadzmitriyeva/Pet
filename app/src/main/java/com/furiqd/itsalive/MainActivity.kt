@@ -1,7 +1,6 @@
 package com.furiqd.itsalive
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -17,9 +16,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.furiqd.auth.presentation.navigation.AuthGraph
+import com.furiqd.designsystem.theme.ItsAliveTheme
 import com.furiqd.domain.model.UserSessionState
 import com.furiqd.home.presentation.navigation.HomeGraph
-import com.furiqd.itsalive.ui.theme.ItsAliveTheme
 import com.furiqd.personalisation.presentation.navigation.PersonalisationGraph
 import dagger.hilt.android.AndroidEntryPoint
 

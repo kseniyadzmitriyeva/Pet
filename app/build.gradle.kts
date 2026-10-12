@@ -62,6 +62,7 @@ dependencies {
     implementation(project(":feature:home"))
     implementation(project(":domain"))
     implementation(project(":core:data"))
+    implementation(project(":core:designsystem"))
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
