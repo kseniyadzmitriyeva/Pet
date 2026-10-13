@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun AvatarWithBorder(
-    avatarId: Int,
+    avatarUrl: String?,
     isDone: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -38,9 +38,8 @@ fun AvatarWithBorder(
                 .background(MaterialTheme.colorScheme.secondaryContainer),
             contentAlignment = Alignment.Center
         ) {
-            Image(
-                painter = painterResource(avatarId),
-                contentDescription = "User's avatar",
+            AvatarImage(
+                avatarUrl = avatarUrl,
                 modifier = Modifier.fillMaxSize()
             )
         }

@@ -14,4 +14,5 @@ interface UserRepository {
     suspend fun logOut(): Result<Unit>
     suspend fun checkIsOnboardingCompleted(): Boolean
     suspend fun updateUser(user: User): Result<Unit>
+    suspend fun getUserById(userId: String): User?
 }

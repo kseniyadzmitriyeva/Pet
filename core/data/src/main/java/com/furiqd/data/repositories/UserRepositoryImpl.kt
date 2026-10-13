@@ -111,4 +111,8 @@ class UserRepositoryImpl @Inject constructor(
             localDataSource.saveOnboardingStatus(user.isOnboardingCompleted)
         }
     }
+
+    override suspend fun getUserById(userId: String): User? {
+        return remoteDataSource.getUserProfile(userId)?.toDomain()
+    }
 }

@@ -17,6 +17,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.furiqd.home.presentation.element.ActiveRoomCard
 import com.furiqd.home.presentation.element.CreateRoomPlaceholderCard
+import com.furiqd.home.presentation.element.WaitingForFriendRoomCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,6 +67,17 @@ fun MainScreen(
                         modifier = modifier
                     )
                 }
+                is RoomUiModel.WaitingForFriend -> {
+                    WaitingForFriendRoomCard(
+                        room = room,
+                        onInviteClick = {
+                            onEvent(MainEvent.CopyInviteCodeClicked(room.inviteCode)) },
+                        modifier = modifier
+                    )
+                }
+                is RoomUiModel.Expired -> {
+                    // TODO: ExpiredCard
+                }
             }
         }
     }
@@ -75,6 +87,7 @@ fun MainRoute(
     onNavigateToProfile: () -> Unit,
     onNavigateToAuth: () -> Unit,
     onNavigateToCreateRoom: () -> Unit,
+    onNavigateToPairing: () -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
      val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -90,6 +103,9 @@ fun MainRoute(
                 }
                 is MainEffect.NavigateToProfile -> {
                     onNavigateToProfile()
+                }
+                is MainEffect.NavigateToPairing -> {
+                    onNavigateToPairing()
                 }
                 is MainEffect.CreateRoom -> onNavigateToCreateRoom()
             }

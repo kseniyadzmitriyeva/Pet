@@ -63,7 +63,7 @@ fun ActiveRoomCard(
             ) {
 
                 AvatarWithBorder(
-                    avatarId = room.userAvatarId,
+                    avatarUrl = room.userAvatarUrl,
                     isDone = room.isUserPhotoDone,
                     modifier = Modifier.size(40.dp))
                 Icon(
@@ -79,7 +79,7 @@ fun ActiveRoomCard(
                 )
 
                 AvatarWithBorder(
-                    avatarId = room.friendAvatarId,
+                    avatarUrl = room.friendAvatarUrl,
                     isDone = room.isFriendPhotoDone,
                     modifier = Modifier.size(40.dp))
             }

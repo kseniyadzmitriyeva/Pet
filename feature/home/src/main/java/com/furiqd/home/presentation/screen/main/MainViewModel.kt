@@ -1,9 +1,11 @@
 package com.furiqd.home.presentation.screen.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.furiqd.domain.usecase.GetUserUseCase
 import com.furiqd.home.domain.usecase.FetchRoomsUseCase
+import com.furiqd.home.presentation.screen.main.mapper.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,27 +33,31 @@ class MainViewModel @Inject constructor(
 
     private fun observeUserDataAndRooms() {
         viewModelScope.launch {
-            launch {
-                getUserUseCase.invoke().collect { user ->
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            userId = user?.id ?: "",
-                            isLoading = false
-                        )
-                    }
-                }
-            }
-            launch {
-                fetchRoomsUseCase.invoke(uiState.value.userId).collect { activeRooms ->
-                    _uiState.update { currentState ->
-                        val fullList = activeRooms + RoomUiModel.Placeholder()
-                        val updatedList = updateSelectedRoomInList(fullList,
-                            currentState.selectedRoom?.id)
+            getUserUseCase.invoke().collect { user ->
+                val currentUserId = user?.id ?: ""
 
-                        currentState.copy(
-                            rooms = updatedList,
-                            isLoading = false
-                        )
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        userId = currentUserId,
+                        isLoading = false
+                    )
+                }
+                if (currentUserId.isNotBlank()) {
+                    fetchRoomsUseCase.invoke(currentUserId).collect { pairingRooms ->
+                        _uiState.update { currentState ->
+                            val mappedRooms = pairingRooms.map { room ->
+                                room.toUiModel(isSelected = false)
+                            }
+
+                            val fullList = mappedRooms + RoomUiModel.Placeholder()
+                            val updatedList = updateSelectedRoomInList(fullList, currentState.selectedRoom?.id)
+
+                            currentState.copy(
+                                rooms = updatedList,
+                                isLoading = false
+                            )
+                        }
+                        Log.d("MainViewModel", "Rooms fetched: $pairingRooms")
                     }
                 }
             }
@@ -64,6 +70,8 @@ class MainViewModel @Inject constructor(
             when (room) {
                 is RoomUiModel.Active -> room.copy(isSelected = room.id == idToSelect)
                 is RoomUiModel.Placeholder -> room.copy(isSelected = room.id == idToSelect)
+                is RoomUiModel.WaitingForFriend -> room.copy(isSelected = room.id == idToSelect)
+                is RoomUiModel.Expired -> room.copy(isSelected = room.id == idToSelect)
             }
         }
     }
@@ -101,12 +109,6 @@ class MainViewModel @Inject constructor(
                     // TODO: Вызвать репозиторий / UseCase для удаления комнаты
                 }
             }
-            is MainEvent.LogOutClicked -> {
-                viewModelScope.launch {
-                    // TODO: Вызвать репозиторий / UseCase для выхода из аккаунта
-                    _effect.send(MainEffect.NavigateToAuth)
-                }
-            }
             is MainEvent.InciteFriendClicked -> {
                 viewModelScope.launch {
                     // TODO: Вызвать репозиторий / UseCase для пинга друга (Nudge)
@@ -121,6 +123,8 @@ class MainViewModel @Inject constructor(
                         when (room) {
                             is RoomUiModel.Active -> room.copy(isSelected = room.id == targetRoomId)
                             is RoomUiModel.Placeholder -> room.copy(isSelected = room.id == targetRoomId)
+                            is RoomUiModel.WaitingForFriend -> room.copy(isSelected = room.id == targetRoomId)
+                            is RoomUiModel.Expired -> room.copy(isSelected = room.id == targetRoomId)
                         }
                     }
                     currentState.copy(rooms = updatedRooms)
@@ -134,12 +138,14 @@ class MainViewModel @Inject constructor(
                         when (room) {
                             is RoomUiModel.Active -> room.copy(isSelected = room.id == targetRoomId)
                             is RoomUiModel.Placeholder -> room.copy(isSelected = room.id == targetRoomId)
+                            is RoomUiModel.WaitingForFriend -> room.copy(isSelected = room.id == targetRoomId)
+                            is RoomUiModel.Expired -> room.copy(isSelected = room.id == targetRoomId)
                         }
                     }
                     currentState.copy(rooms = updatedRooms)
                 }
             }
-            is MainEvent.onOpenCreateRoomDialogClicked -> {
+            is MainEvent.OpenCreateRoomDialogClicked -> {
                 viewModelScope.launch {
                     _effect.send(MainEffect.CreateRoom)
                 }

@@ -32,4 +32,11 @@
     <string name="create_room_action_create">Let\'s Go!</string>
     <string name="create_room_action_cancel">Maybe later</string>
     <string name="create_room_pet_description">Pet selection</string>
+
+
+    <string name="room_expires_in">Room expires in %1$s</string>
+    <string name="room_expired">Room expired</string>
+    <string name="waiting_for_friend_title">Waiting for your friend!</string>
+    <string name="waiting_for_friend_subtitle">«%1$s» needs the second parent</string>
+    <string name="avatar_plus_symbol">+</string>
 </resources>
