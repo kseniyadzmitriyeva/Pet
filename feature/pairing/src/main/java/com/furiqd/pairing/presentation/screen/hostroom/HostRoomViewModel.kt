@@ -1,0 +1,127 @@
+package com.furiqd.pairing.presentation.screen.hostroom
+
+import android.util.Log
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.furiqd.shared.model.PairingRoom
+import com.furiqd.pairing.domain.usecase.FormatRoomTimeLeftUseCase
+import com.furiqd.shared.usecase.GetPairingRoomUseCase
+import com.furiqd.pairing.domain.usecase.RoomTimerResult
+import com.furiqd.pairing.presentation.util.ClipboardManagerWrapper
+import com.furiqd.pairing.presentation.util.ShareManager
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class HostRoomViewModel@Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val getPairingRoomUseCase: GetPairingRoomUseCase,
+    private val formatRoomTimeLeftUseCase: FormatRoomTimeLeftUseCase,
+    private val clipboardManager: ClipboardManagerWrapper,
+    private val shareManager: ShareManager
+) : ViewModel() {
+
+    private val roomId: String = checkNotNull(savedStateHandle["roomId"])
+
+    private val _uiState = MutableStateFlow<HostRoomState>(HostRoomState.Loading)
+    val uiState: StateFlow<HostRoomState> = _uiState.asStateFlow()
+
+    private val _effect = Channel<HostRoomEffect>(Channel.BUFFERED)
+    val effect = _effect.receiveAsFlow()
+
+    init {
+        Log.d("HostRoomViewModel", "init")
+        loadRoom()
+    }
+
+    fun onEvent(event: HostRoomEvent) {
+        when (event) {
+            HostRoomEvent.OnCopyCodeClicked -> handleCopyCode()
+            HostRoomEvent.OnShareClicked -> handleShareCode()
+            HostRoomEvent.OnBackClicked -> {
+                viewModelScope.launch { _effect.send(HostRoomEffect.NavigateBack) }
+            }
+        }
+    }
+
+    private fun loadRoom() {
+        viewModelScope.launch {
+            _uiState.update { HostRoomState.Loading }
+
+            getPairingRoomUseCase(roomId).fold(
+                onSuccess = { room ->
+                    _uiState.update {
+                        HostRoomState.Success(
+                            room = room,
+                            formattedTimeLeft = null,
+                            isExpired = room.isExpired,
+                            isCopied = false
+                        )
+                    }
+                    if (!room.isExpired) {
+                        startTimer(room)
+                    }
+                },
+                onFailure = { error ->
+                    _uiState.update { HostRoomState.Error(error.localizedMessage) }
+                }
+            )
+        }
+    }
+    private fun startTimer(room: PairingRoom) {
+        viewModelScope.launch {
+            flow {
+                while (true) {
+                    emit(Unit)
+                    delay(1000L)
+                }
+            }.collect {
+                val timerResult = formatRoomTimeLeftUseCase(room.createdAt)
+
+                when (timerResult) {
+                    is RoomTimerResult.Active -> {
+                        _uiState.update { state ->
+                            (state as? HostRoomState.Success)?.copy(
+                                formattedTimeLeft = timerResult.formattedTime,
+                                isExpired = false
+                            ) ?: state
+                        }
+                    }
+                    RoomTimerResult.Expired -> {
+                        _uiState.update { state ->
+                            (state as? HostRoomState.Success)?.copy(
+                                formattedTimeLeft = null,
+                                isExpired = true
+                            ) ?: state
+                        }
+                        return@collect
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handleCopyCode() {
+        val state = _uiState.value as? HostRoomState.Success ?: return
+        viewModelScope.launch {
+            _uiState.update { state.copy(isCopied = true) }
+            clipboardManager.copyToClipboard(state.room.code)
+            _effect.send(HostRoomEffect.ShowCopiedToast)
+        }
+    }
+
+    private fun handleShareCode() {
+        val state = _uiState.value as? HostRoomState.Success ?: return
+        shareManager.shareInvite(state.room.code, state.room.pet.name)
+    }
+}
