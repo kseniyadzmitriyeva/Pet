@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.furiqd.shared.usecase.GetUserUseCase
 import com.furiqd.home.domain.usecase.LogoutUseCase
 import com.furiqd.shared.usecase.UpdateAvatarUseCase
+import com.furiqd.shared.util.ImageUrlFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +18,8 @@ import javax.inject.Inject
 class ProfileViewModel@Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val logoutUseCase: LogoutUseCase,
-    private val updateAvatarUseCase: UpdateAvatarUseCase
+    private val updateAvatarUseCase: UpdateAvatarUseCase,
+    private val imageFormatter: ImageUrlFormatter
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileState())
     val uiState = _uiState.asStateFlow()
@@ -34,7 +36,7 @@ class ProfileViewModel@Inject constructor(
                         id = user?.id ?: "",
                         name = user?.name ?: "",
                         email = user?.email ?: "",
-                        avatarUrl = user?.avatarId,
+                        avatarUrl = imageFormatter.format(user?.avatarId),
                         amountOfRooms = user?.roomIds?.size ?: 0
                     )
                 )

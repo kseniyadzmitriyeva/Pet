@@ -3,22 +3,31 @@ package com.furiqd.home.presentation.screen.main
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.furiqd.shared.usecase.GetUserUseCase
 import com.furiqd.home.domain.usecase.FetchRoomsUseCase
 import com.furiqd.home.presentation.screen.main.mapper.toUiModel
+import com.furiqd.shared.usecase.GetUserUseCase
+import com.furiqd.shared.util.ImageUrlFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
-    private val fetchRoomsUseCase: FetchRoomsUseCase
+    private val fetchRoomsUseCase: FetchRoomsUseCase,
+    private val imageFormatter: ImageUrlFormatter
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainState(isLoading = true))
@@ -32,124 +41,101 @@ class MainViewModel @Inject constructor(
     }
 
     private fun observeUserDataAndRooms() {
-        viewModelScope.launch {
-            getUserUseCase.invoke().collect { user ->
-                val currentUserId = user?.id ?: ""
+        getUserUseCase()
+            .flatMapLatest { user ->
+                val userId = user?.id.orEmpty()
+                _uiState.update { it.copy(userId = userId) }
 
+                if (userId.isNotBlank()) {
+                    fetchRoomsUseCase(userId)
+                } else {
+                    flowOf(emptyList())
+                }
+            }
+            .onEach { pairingRooms ->
+                Log.d("MainViewModel", "Rooms fetched: $pairingRooms")
                 _uiState.update { currentState ->
+                    val mappedRooms = pairingRooms.map { room ->
+                        room.toUiModel(isSelected = false, imageFormatter = imageFormatter)
+                    }
+
+                    val fullList = mappedRooms + RoomUiModel.Placeholder()
+                    val updatedList = selectRoomById(fullList, currentState.selectedRoom?.id)
+
                     currentState.copy(
-                        userId = currentUserId,
+                        rooms = updatedList,
                         isLoading = false
                     )
                 }
-                if (currentUserId.isNotBlank()) {
-                    fetchRoomsUseCase.invoke(currentUserId).collect { pairingRooms ->
-                        _uiState.update { currentState ->
-                            val mappedRooms = pairingRooms.map { room ->
-                                room.toUiModel(isSelected = false)
-                            }
-
-                            val fullList = mappedRooms + RoomUiModel.Placeholder()
-                            val updatedList = updateSelectedRoomInList(fullList, currentState.selectedRoom?.id)
-
-                            currentState.copy(
-                                rooms = updatedList,
-                                isLoading = false
-                            )
-                        }
-                        Log.d("MainViewModel", "Rooms fetched: $pairingRooms")
-                    }
-                }
             }
-        }
-    }
-    private fun updateSelectedRoomInList(list: List<RoomUiModel>, selectedId: String?):
-            List<RoomUiModel> {
-        val idToSelect = selectedId ?: list.firstOrNull()?.id
-        return list.map { room ->
-            when (room) {
-                is RoomUiModel.Active -> room.copy(isSelected = room.id == idToSelect)
-                is RoomUiModel.Placeholder -> room.copy(isSelected = room.id == idToSelect)
-                is RoomUiModel.WaitingForFriend -> room.copy(isSelected = room.id == idToSelect)
-                is RoomUiModel.Expired -> room.copy(isSelected = room.id == idToSelect)
+            .catch { throwable ->
+                Log.e("MainViewModel", "Error fetching data", throwable)
+                _uiState.update { it.copy(isLoading = false) }
             }
-        }
+            .launchIn(viewModelScope)
     }
 
     fun handleEvent(event: MainEvent) {
         when (event) {
-            is MainEvent.CameraClicked -> {
-                viewModelScope.launch {
-                    _effect.send(MainEffect.TriggerPetAnimation)
-                }
+            is MainEvent.CameraClicked, MainEvent.PetClicked -> {
+                sendEffect(MainEffect.TriggerPetAnimation)
             }
+
             is MainEvent.ProfileClicked -> {
-                viewModelScope.launch {
-                    _effect.send(MainEffect.NavigateToProfile)
-                }
+                sendEffect(MainEffect.NavigateToProfile)
             }
-            is MainEvent.PetClicked -> {
-                viewModelScope.launch {
-                    _effect.send(MainEffect.TriggerPetAnimation)
-                }
-            }
+
             is MainEvent.CopyInviteCodeClicked -> {
-                viewModelScope.launch {
-                    _effect.send(MainEffect.CopyToClipboard(event.code))
-                    //_effect.send(MainEffect.ShowToast("Код скопирован!"))
-                }
+                sendEffect(MainEffect.CopyToClipboard(event.code))
             }
-            is MainEvent.AddRoomClicked -> {
-                viewModelScope.launch {
-                    _effect.send(MainEffect.CreateRoom)
-                }
+
+            is MainEvent.AddRoomClicked, MainEvent.OpenCreateRoomDialogClicked -> {
+                sendEffect(MainEffect.CreateRoom)
             }
+
             is MainEvent.LeaveRoomClicked -> {
-                viewModelScope.launch {
-                    // TODO: Вызвать репозиторий / UseCase для удаления комнаты
-                }
+                // TODO: Вызвать UseCase для выхода из комнаты
             }
+
             is MainEvent.InciteFriendClicked -> {
-                viewModelScope.launch {
-                    // TODO: Вызвать репозиторий / UseCase для пинга друга (Nudge)
-                    _effect.send(MainEffect.ShowToast("Friend nudged!"))
-                }
+                // TODO: Вызвать UseCase для пинга друга
+                sendEffect(MainEffect.ShowToast("Friend nudged!"))
             }
+
             is MainEvent.RoomChangedToNextInPager -> {
-                val targetRoomId = uiState.value.nextRoom?.id ?: return
-
-                _uiState.update { currentState ->
-                    val updatedRooms = currentState.rooms.map { room ->
-                        when (room) {
-                            is RoomUiModel.Active -> room.copy(isSelected = room.id == targetRoomId)
-                            is RoomUiModel.Placeholder -> room.copy(isSelected = room.id == targetRoomId)
-                            is RoomUiModel.WaitingForFriend -> room.copy(isSelected = room.id == targetRoomId)
-                            is RoomUiModel.Expired -> room.copy(isSelected = room.id == targetRoomId)
-                        }
-                    }
-                    currentState.copy(rooms = updatedRooms)
-                }
+                val targetRoomId = _uiState.value.nextRoom?.id ?: return
+                changeSelectedRoom(targetRoomId)
             }
+
             is MainEvent.RoomChangedToPreviousInPager -> {
-                val targetRoomId = uiState.value.previousRoom?.id ?: return
+                val targetRoomId = _uiState.value.previousRoom?.id ?: return
+                changeSelectedRoom(targetRoomId)
+            }
+        }
+    }
 
-                _uiState.update { currentState ->
-                    val updatedRooms = currentState.rooms.map { room ->
-                        when (room) {
-                            is RoomUiModel.Active -> room.copy(isSelected = room.id == targetRoomId)
-                            is RoomUiModel.Placeholder -> room.copy(isSelected = room.id == targetRoomId)
-                            is RoomUiModel.WaitingForFriend -> room.copy(isSelected = room.id == targetRoomId)
-                            is RoomUiModel.Expired -> room.copy(isSelected = room.id == targetRoomId)
-                        }
-                    }
-                    currentState.copy(rooms = updatedRooms)
-                }
+    private fun changeSelectedRoom(roomId: String) {
+        _uiState.update { currentState ->
+            currentState.copy(rooms = selectRoomById(currentState.rooms, roomId))
+        }
+    }
+
+    private fun selectRoomById(list: List<RoomUiModel>, targetId: String?): List<RoomUiModel> {
+        val selectedId = targetId ?: list.firstOrNull()?.id
+        return list.map { room ->
+            val isSelected = room.id == selectedId
+            when (room) {
+                is RoomUiModel.Active -> room.copy(isSelected = isSelected)
+                is RoomUiModel.Placeholder -> room.copy(isSelected = isSelected)
+                is RoomUiModel.WaitingForFriend -> room.copy(isSelected = isSelected)
+                is RoomUiModel.Expired -> room.copy(isSelected = isSelected)
             }
-            is MainEvent.OpenCreateRoomDialogClicked -> {
-                viewModelScope.launch {
-                    _effect.send(MainEffect.CreateRoom)
-                }
-            }
+        }
+    }
+
+    private fun sendEffect(effect: MainEffect) {
+        viewModelScope.launch {
+            _effect.send(effect)
         }
     }
 }

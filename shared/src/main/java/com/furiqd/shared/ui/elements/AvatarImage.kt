@@ -1,58 +1,40 @@
 package com.furiqd.shared.ui.elements
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import coil.compose.SubcomposeAsyncImage
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.furiqd.shared.R
 
 @Composable
 fun AvatarImage(
     avatarUrl: String?,
     modifier: Modifier = Modifier,
-    @DrawableRes placeholderResId: Int = R.drawable.avatar_classic
+    @DrawableRes placeholderResId: Int = R.drawable.avatar_classic,
+    contentDescription: String? = "User avatar"
 ) {
-    if (avatarUrl.isNullOrBlank()) {
-        Image(
-            painter = painterResource(placeholderResId),
-            contentDescription = "Basic avatar",
-            modifier = modifier
-        )
-        return
-    } else {
-        SubcomposeAsyncImage(
-            model = avatarUrl,
-            contentDescription = "User avatar",
-            modifier = modifier,
-            contentScale = ContentScale.Crop,
-            loading = {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        strokeWidth = 2.dp
-                    )
-                }
-            },
-            error = {
-                Image(
-                    painter = painterResource(id = placeholderResId),
-                    contentDescription = "Fallback avatar",
-                    contentScale = ContentScale.Crop
-                )
-            }
-        )
+    val context = LocalContext.current
+    val placeholderPainter = painterResource(id = placeholderResId)
+
+    val imageRequest = remember(avatarUrl) {
+        ImageRequest.Builder(context)
+            .data(avatarUrl)
+            .crossfade(true)
+            .build()
     }
 
+    AsyncImage(
+        model = imageRequest,
+        contentDescription = contentDescription,
+        modifier = modifier,
+        placeholder = placeholderPainter,
+        error = placeholderPainter,
+        fallback = placeholderPainter,
+        contentScale = ContentScale.Crop
+    )
 }
