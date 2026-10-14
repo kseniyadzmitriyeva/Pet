@@ -1,6 +1,6 @@
 package com.furiqd.data.mapper
 
-import com.furiqd.domain.model.User
+import com.furiqd.shared.model.User
 import com.furiqd.local.entity.LocalUserEntity
 import com.furiqd.network.dto.UserDto
 

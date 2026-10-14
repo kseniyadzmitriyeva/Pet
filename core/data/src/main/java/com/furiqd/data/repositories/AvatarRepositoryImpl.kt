@@ -1,8 +1,8 @@
 package com.furiqd.data.repositories
 
-import com.furiqd.domain.model.Avatar
-import com.furiqd.domain.model.AvatarType
-import com.furiqd.domain.repository.AvatarRepository
+import com.furiqd.shared.model.Avatar
+import com.furiqd.shared.model.AvatarType
+import com.furiqd.shared.repository.AvatarRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject

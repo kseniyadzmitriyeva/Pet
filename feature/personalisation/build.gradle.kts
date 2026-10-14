@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.furiqd.personalisation"
-    compileSdk = 37
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 26
@@ -34,8 +34,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
-    implementation(project(":core:designsystem"))
-    implementation(project(":domain"))
+    implementation(project(":shared"))
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -50,6 +49,8 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.room.ktx)
     implementation(libs.coil.compose)
+    implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.ui)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.appcompat)

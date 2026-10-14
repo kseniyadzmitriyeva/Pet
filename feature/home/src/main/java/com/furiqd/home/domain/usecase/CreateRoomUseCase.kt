@@ -1,8 +1,8 @@
 package com.furiqd.home.domain.usecase
 
-import com.furiqd.domain.model.PetEggType
-import com.furiqd.domain.repository.RoomRepository
-import com.furiqd.domain.repository.UserRepository
+import com.furiqd.shared.model.PetEggType
+import com.furiqd.shared.repository.RoomRepository
+import com.furiqd.shared.repository.UserRepository
 import javax.inject.Inject
 
 class CreateRoomUseCase@Inject constructor(

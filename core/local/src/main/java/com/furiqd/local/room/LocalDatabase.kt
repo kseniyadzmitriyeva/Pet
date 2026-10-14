@@ -6,7 +6,7 @@ import com.furiqd.local.entity.JointPetEntity
 import com.furiqd.local.entity.LocalUserEntity
 
 @Database(entities = [JointPetEntity::class, LocalUserEntity::class],
-    version = 4, exportSchema = false)
+    version = 5, exportSchema = false)
 abstract class LocalDatabase : RoomDatabase() {
     abstract fun petDao(): PetDao
     abstract fun userDao(): UserDao

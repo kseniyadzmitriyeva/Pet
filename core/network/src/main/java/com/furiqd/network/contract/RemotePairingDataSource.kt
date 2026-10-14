@@ -1,6 +1,6 @@
 package com.furiqd.network.contract
 
-import com.furiqd.domain.model.PetEggType
+import com.furiqd.shared.model.PetEggType
 import com.furiqd.network.dto.PairingRoomDto
 import kotlinx.coroutines.flow.Flow
 

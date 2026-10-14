@@ -1,7 +1,7 @@
 package com.furiqd.personalisation.presentation.screen.onboarding
 
 import androidx.compose.runtime.Immutable
-import com.furiqd.domain.model.Avatar
+import com.furiqd.shared.model.Avatar
 
 
 @Immutable
@@ -9,7 +9,6 @@ data class OnboardingState(
     val isLoading: Boolean = false,
     val nickname: String = "",
     val name: String = "",
-    val selectedAvatarId: String = "",
     val localAvatarUri: String? = null,
     val selectedCustomBytes: ByteArray? = null,
     val avatars: List<Avatar> = emptyList(),
@@ -29,7 +28,6 @@ data class OnboardingState(
         if (isNextButtonEnabled != other.isNextButtonEnabled) return false
         if (nickname != other.nickname) return false
         if (name != other.name) return false
-        if (selectedAvatarId != other.selectedAvatarId) return false
         if (localAvatarUri != other.localAvatarUri) return false
         if (!selectedCustomBytes.contentEquals(other.selectedCustomBytes)) return false
         if (avatars != other.avatars) return false
@@ -44,7 +42,6 @@ data class OnboardingState(
         result = 31 * result + isNextButtonEnabled.hashCode()
         result = 31 * result + nickname.hashCode()
         result = 31 * result + name.hashCode()
-        result = 31 * result + selectedAvatarId.hashCode()
         result = 31 * result + (localAvatarUri?.hashCode() ?: 0)
         result = 31 * result + (selectedCustomBytes?.contentHashCode() ?: 0)
         result = 31 * result + avatars.hashCode()

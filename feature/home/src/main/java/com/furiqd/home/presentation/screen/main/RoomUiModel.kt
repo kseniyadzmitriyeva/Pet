@@ -1,7 +1,5 @@
 package com.furiqd.home.presentation.screen.main
 
-import com.furiqd.designsystem.R
-
 sealed interface RoomUiModel {
     val id: String
     val isSelected: Boolean

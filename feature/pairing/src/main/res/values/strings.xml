@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="room_expires_in">Room expires in %1$s</string>
+    <string name="room_expired">Room time expired</string>
+    <string name="waiting_for_friend_subtitle">«%1$s» waits for your friend</string>
+    <string name="invite_code_label">INVITE CODE</string>
+    <string name="copied_toast">Coped</string>
+    <string name="copy_code_content_desc">Copy invite code</string>
+    <string name="send_invite_button">Send invite</string>
+    <string name="share_invite_text">Lets get together with %1$s! Invite code: %2$s</string>
+    <string name="share_chooser_title">Invite</string>
+    <string name="avatar_plus_symbol">+</string>
+</resources>

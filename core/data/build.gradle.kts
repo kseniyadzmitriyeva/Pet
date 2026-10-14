@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.furiqd.data"
-    compileSdk = 37
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 26
@@ -34,7 +34,7 @@ android {
 dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:local"))
-    implementation(project(":domain"))
+    implementation(project(":shared"))
 
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.datastore.preferences)

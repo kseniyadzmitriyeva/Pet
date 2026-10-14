@@ -1,6 +1,6 @@
 package com.furiqd.home.presentation.screen.createroom
 
-import com.furiqd.domain.model.PetEggType
+import com.furiqd.shared.model.PetEggType
 
 sealed interface CreateRoomEvent {
     data class CreateRoomClicked(

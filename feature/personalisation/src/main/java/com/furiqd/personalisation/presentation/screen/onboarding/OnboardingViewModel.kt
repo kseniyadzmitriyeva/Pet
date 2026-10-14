@@ -2,11 +2,11 @@ package com.furiqd.personalisation.presentation.screen.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.furiqd.domain.model.User
-import com.furiqd.domain.repository.UserRepository
-import com.furiqd.domain.usecase.UpdateAvatarUseCase
 import com.furiqd.personalisation.domain.GetAvatarsUseCase
 import com.furiqd.personalisation.domain.SaveUserUseCase
+import com.furiqd.shared.model.User
+import com.furiqd.shared.repository.UserRepository
+import com.furiqd.shared.usecase.UpdateAvatarUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +28,7 @@ class OnboardingViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(OnboardingState())
     val uiState = _uiState.asStateFlow()
+
     private val _effect = Channel<OnboardingEffect>()
     val effect = _effect.receiveAsFlow()
 
@@ -39,34 +40,28 @@ class OnboardingViewModel @Inject constructor(
         when (event) {
             is OnboardingEvent.NicknameChanged -> {
                 _uiState.update { currentState ->
-                    val isLengthError = event.nickname.length !in 2..15
-                    currentState.copy(
-                        nickname = event.nickname,
-                        isNicknameError = event.nickname.isNotEmpty() && isLengthError,
-                        isNextButtonEnabled = !isLengthError && (currentState.selectedAvatarId.isNotEmpty() || currentState.localAvatarUri != null)
+                    val isError = event.nickname.isNotEmpty() && event.nickname.length !in 2..15
+                    validateAndCopy(
+                        currentState.copy(
+                            nickname = event.nickname,
+                            isNicknameError = isError
+                        )
                     )
                 }
             }
+
             is OnboardingEvent.NameChanged -> {
                 _uiState.update { currentState ->
-                    val isLengthError = event.name.length !in 2..15
-                    currentState.copy(
-                        name = event.name,
-                        isNameError = event.name.isNotEmpty() && isLengthError,
-                        isNextButtonEnabled = !isLengthError && (currentState.selectedAvatarId.isNotEmpty() || currentState.localAvatarUri != null)
+                    val isError = event.name.isNotEmpty() && event.name.length !in 2..15
+                    validateAndCopy(
+                        currentState.copy(
+                            name = event.name,
+                            isNameError = isError
+                        )
                     )
                 }
             }
-            is OnboardingEvent.CommonAvatarSelected -> {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        selectedAvatarId = event.avatarId.toString(),
-                        localAvatarUri = null,
-                        selectedCustomBytes = null,
-                        isNextButtonEnabled = currentState.nickname.length in 2..15
-                    )
-                }
-            }
+
             is OnboardingEvent.UploadCustomAvatarClicked -> {
                 viewModelScope.launch {
                     _effect.send(OnboardingEffect.UploadAvatar)
@@ -75,47 +70,54 @@ class OnboardingViewModel @Inject constructor(
 
             is OnboardingEvent.CustomAvatarSelected -> {
                 _uiState.update { currentState ->
-                    currentState.copy(
-                        localAvatarUri = event.uri,
-                        selectedCustomBytes = event.bytes,
-                        selectedAvatarId = "",
-                        isNextButtonEnabled = currentState.nickname.length in 2..15
+                    validateAndCopy(
+                        currentState.copy(
+                            localAvatarUri = event.uri,
+                            selectedCustomBytes = event.bytes
+                        )
                     )
                 }
             }
-
             OnboardingEvent.NextClicked -> {
                 saveUserProfile()
             }
         }
     }
+    private fun validateAndCopy(state: OnboardingState): OnboardingState {
+        val isNicknameValid = state.nickname.trim().length in 2..15
+        val isNameValid = state.name.trim().length in 2..15
+        val hasAvatar = state.selectedCustomBytes != null
+
+        return state.copy(
+            isNextButtonEnabled = isNicknameValid && isNameValid && hasAvatar
+        )
+    }
+
     private fun saveUserProfile() {
-        if (_uiState.value.isLoading) return
+        if (_uiState.value.isLoading || !_uiState.value.isNextButtonEnabled) return
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, isNextButtonEnabled = false) }
 
             val currentState = _uiState.value
-            val customBytes = currentState.selectedCustomBytes
-            val finalAvatarId: String = if (customBytes != null) {
-                val uploadResult = updateAvatarUseCase.invoke(customBytes)
 
+            val finalAvatarUrl: String? = currentState.selectedCustomBytes?.let { bytes ->
+                val uploadResult = updateAvatarUseCase(bytes)
                 if (uploadResult.isFailure) {
-                    _uiState.update { it.copy(isLoading = false, isNextButtonEnabled = true) }
+                    _uiState.update { validateAndCopy(it.copy(isLoading = false)) }
                     _effect.send(OnboardingEffect.ShowError("Не удалось загрузить аватарку"))
                     return@launch
                 }
-                uploadResult.getOrThrow()
-            } else {
-                currentState.selectedAvatarId
+                uploadResult.getOrNull()
             }
+
             val currentUser = userRepository.getUser()
             val updatedUser = User(
-                id = currentUser?.id ?: "",
+                id = currentUser?.id.orEmpty(),
                 email = currentUser?.email,
                 nickName = currentState.nickname.trim(),
-                roomIds = currentUser?.roomIds ?: emptyList(),
-                avatarId = finalAvatarId,
+                roomIds = currentUser?.roomIds.orEmpty(),
+                avatarId = finalAvatarUrl,
                 name = currentState.name.trim(),
                 isOnboardingCompleted = true
             )
@@ -126,10 +128,12 @@ class OnboardingViewModel @Inject constructor(
                     _effect.send(OnboardingEffect.NavigateToNext)
                 }
                 .onFailure { exception ->
-                    _uiState.update { currentState ->
-                        currentState.copy(isLoading = false, isNextButtonEnabled = true)
-                    }
-                    _effect.send(OnboardingEffect.ShowError(exception.localizedMessage ?: "Ошибка сохранения"))
+                    _uiState.update { validateAndCopy(it.copy(isLoading = false)) }
+                    _effect.send(
+                        OnboardingEffect.ShowError(
+                            exception.localizedMessage ?: "Ошибка сохранения"
+                        )
+                    )
                 }
         }
     }

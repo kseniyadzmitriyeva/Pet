@@ -3,7 +3,7 @@ package com.furiqd.home.presentation.screen.main
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.furiqd.domain.usecase.GetUserUseCase
+import com.furiqd.shared.usecase.GetUserUseCase
 import com.furiqd.home.domain.usecase.FetchRoomsUseCase
 import com.furiqd.home.presentation.screen.main.mapper.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel

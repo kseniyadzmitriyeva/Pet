@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.furiqd.designsystem.config.PetEggConfig
+import com.furiqd.shared.config.PetEggConfig
 import com.furiqd.home.R
 
 @Composable

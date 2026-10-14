@@ -1,8 +1,8 @@
 package com.furiqd.home.domain.usecase
 
-import com.furiqd.domain.model.PairingRoomWithDetails
-import com.furiqd.domain.repository.RoomRepository
-import com.furiqd.domain.repository.UserRepository
+import com.furiqd.shared.model.PairingRoomWithDetails
+import com.furiqd.shared.repository.RoomRepository
+import com.furiqd.shared.repository.UserRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope

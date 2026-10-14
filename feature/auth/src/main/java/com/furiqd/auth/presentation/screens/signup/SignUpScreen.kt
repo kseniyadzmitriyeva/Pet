@@ -13,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -24,8 +23,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.furiqd.auth.R
-import com.furiqd.auth.presentation.elements.BackButton
-import com.furiqd.auth.presentation.elements.ErrorSnackbar
+import com.furiqd.shared.ui.elements.BackButton
+import com.furiqd.shared.ui.elements.ErrorSnackbar
 import com.furiqd.auth.presentation.elements.LoginWithGoogleButton
 import com.furiqd.auth.presentation.helper.AuthWithGoogleHelper
 import com.furiqd.auth.presentation.helper.asString

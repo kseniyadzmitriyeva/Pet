@@ -1,8 +1,7 @@
 package com.furiqd.data.repositories
 
-import com.furiqd.domain.model.AuthResult
-import com.furiqd.network.dto.AuthResultDto
-import com.furiqd.domain.repository.AuthRepository
+import com.furiqd.shared.model.AuthResult
+import com.furiqd.shared.repository.AuthRepository
 import com.furiqd.local.contract.UserLocalDataSource
 import com.furiqd.network.contract.RemoteAuthDataSource
 import com.furiqd.network.datasource.AuthWithFirebaseAuthenticator

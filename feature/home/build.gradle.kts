@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.furiqd.home"
-    compileSdk = 37
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 26
@@ -34,8 +34,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:designsystem"))
-    implementation(project(":domain"))
+    implementation(project(":shared"))
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

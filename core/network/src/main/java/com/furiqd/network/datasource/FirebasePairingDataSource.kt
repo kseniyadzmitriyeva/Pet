@@ -1,7 +1,7 @@
 package com.furiqd.network.datasource
 
 import android.util.Log
-import com.furiqd.domain.model.PetEggType
+import com.furiqd.shared.model.PetEggType
 import com.furiqd.network.contract.RemotePairingDataSource
 import com.furiqd.network.dto.JointPetDto
 import com.furiqd.network.dto.PairingRoomDto

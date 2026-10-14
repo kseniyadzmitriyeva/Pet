@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -41,9 +39,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.furiqd.designsystem.theme.ItsAliveTheme
 import com.furiqd.home.R
+import com.furiqd.shared.ui.theme.ItsAliveTheme
 import com.furiqd.home.presentation.screen.main.RoomUiModel
+import com.furiqd.shared.R.drawable
 import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
 
@@ -236,7 +235,7 @@ private fun WaitingForFriendRoomCardPreview() {
                     isSelected = true,
                     inviteCode = "789012",
                     petName = "Дракончик",
-                    petAvatarId = com.furiqd.designsystem.R.drawable.blue_egg,
+                    petAvatarId = drawable.blue_egg,
                     expiringTime = System.currentTimeMillis() - (15L * 60L * 1000L),
                     userAvatarUrl = null,
                     friendAvatarUrl = null

@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.furiqd.auth.R
-import com.furiqd.designsystem.theme.ItsAliveTheme
+import com.furiqd.shared.ui.theme.ItsAliveTheme
 
 @Composable
 fun StartScreen(

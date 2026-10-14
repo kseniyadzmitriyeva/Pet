@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.furiqd.local"
-    compileSdk = 37
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 26
@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":domain"))
+    implementation(project(":shared"))
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)

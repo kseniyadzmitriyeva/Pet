@@ -1,7 +1,7 @@
 package com.furiqd.data.repositories
 
 import androidx.datastore.core.DataStore
-import com.furiqd.domain.repository.TokenRepository
+import com.furiqd.shared.repository.TokenRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

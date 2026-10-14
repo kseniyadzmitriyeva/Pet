@@ -1,10 +1,6 @@
 package com.furiqd.home.presentation.screen.main
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-import com.furiqd.designsystem.theme.ItsAliveTheme
-
-@Preview(showBackground = true, name = "Main Screen - Active Room")
+/*@Preview(showBackground = true, name = "Main Screen - Active Room")
 @Composable
 fun MainScreenActiveRoomPreview() {
     ItsAliveTheme(darkTheme = true) {
@@ -80,5 +76,4 @@ fun MainScreenPagerPreview() {
             onEvent = {}
         )
     }
-}
-
+}*/

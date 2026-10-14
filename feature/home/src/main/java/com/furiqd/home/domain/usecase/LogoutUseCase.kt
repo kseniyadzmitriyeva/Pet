@@ -1,7 +1,6 @@
 package com.furiqd.home.domain.usecase
 
-import com.furiqd.domain.repository.AuthRepository
-import com.furiqd.domain.repository.UserRepository
+import com.furiqd.shared.repository.UserRepository
 import javax.inject.Inject
 
 class LogoutUseCase@Inject constructor(

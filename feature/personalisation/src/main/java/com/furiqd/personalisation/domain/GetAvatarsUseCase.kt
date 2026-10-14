@@ -1,7 +1,7 @@
 package com.furiqd.personalisation.domain
 
-import com.furiqd.domain.model.Avatar
-import com.furiqd.domain.repository.AvatarRepository
+import com.furiqd.shared.model.Avatar
+import com.furiqd.shared.repository.AvatarRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

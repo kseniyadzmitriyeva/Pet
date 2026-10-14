@@ -9,13 +9,15 @@ import com.furiqd.home.presentation.screen.main.MainRoute
 import com.furiqd.home.presentation.screen.profile.ProfileRoute
 
 fun NavGraphBuilder.homeGraph(navController: NavController,
-                              onNavigateToAuth: () -> Unit) {
+                              onNavigateToAuth: () -> Unit,
+                              onNavigateToPairing: () -> Unit) {
     navigation<HomeGraph>(startDestination = MainDestination) {
         composable<MainDestination> {
             MainRoute(
                 onNavigateToProfile = { navController.navigate(ProfileDestination) },
                 onNavigateToAuth = { onNavigateToAuth()},
-                onNavigateToCreateRoom = { navController.navigate(CreateRoomDestination) }
+                onNavigateToCreateRoom = { navController.navigate(CreateRoomDestination) },
+                onNavigateToPairing = { onNavigateToPairing() }
             )
         }
 

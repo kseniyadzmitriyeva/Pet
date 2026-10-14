@@ -1,6 +1,6 @@
 package com.furiqd.data.repositories
 
-import com.furiqd.domain.repository.StorageRepository
+import com.furiqd.shared.repository.StorageRepository
 import com.furiqd.network.contract.RemoteImageDataSource
 import java.util.UUID
 import javax.inject.Inject

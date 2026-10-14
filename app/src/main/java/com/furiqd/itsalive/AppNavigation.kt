@@ -8,6 +8,8 @@ import com.furiqd.auth.presentation.navigation.authGraph
 import com.furiqd.auth.presentation.navigation.AuthGraph
 import com.furiqd.home.presentation.navigation.HomeGraph
 import com.furiqd.home.presentation.navigation.homeGraph
+import com.furiqd.pairing.presentation.navigation.PairingGraph
+import com.furiqd.pairing.presentation.navigation.pairingGraph
 import com.furiqd.personalisation.presentation.navigation.personalisationGraph
 import com.furiqd.personalisation.presentation.navigation.PersonalisationGraph
 
@@ -49,7 +51,13 @@ fun AppNavigation(
 
         homeGraph(
             navController = navController,
-            onNavigateToAuth = { navController.navigate(AuthGraph)}
+            onNavigateToAuth = { navController.navigate(AuthGraph)},
+            onNavigateToPairing = { navController.navigate(PairingGraph)}
+        )
+
+        pairingGraph(
+            navController = navController,
+            onNavigateToMain = { navController.navigate(HomeGraph)}
         )
     }
 }

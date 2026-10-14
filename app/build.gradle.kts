@@ -13,12 +13,12 @@ configurations.all {
 
 android {
     namespace = "com.furiqd.itsalive"
-    compileSdk = 37
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.furiqd.itsalive"
         minSdk = 26
-        targetSdk = 37
+        targetSdk = 36
         versionCode = 2
         versionName = "1.0"
 
@@ -60,9 +60,9 @@ dependencies {
     implementation(project(":feature:auth"))
     implementation(project(":feature:personalisation"))
     implementation(project(":feature:home"))
-    implementation(project(":domain"))
+    implementation(project(":feature:pairing"))
+    implementation(project(":shared"))
     implementation(project(":core:data"))
-    implementation(project(":core:designsystem"))
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)

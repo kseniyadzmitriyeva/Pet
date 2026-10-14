@@ -1,8 +1,8 @@
 package com.furiqd.itsalive
 
 import androidx.lifecycle.ViewModel
-import com.furiqd.domain.model.UserSessionState
-import com.furiqd.domain.repository.UserRepository
+import com.furiqd.shared.model.UserSessionState
+import com.furiqd.shared.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject

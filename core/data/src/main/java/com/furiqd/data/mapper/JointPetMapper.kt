@@ -1,7 +1,7 @@
 package com.furiqd.data.mapper
 
-import com.furiqd.domain.model.JointPet
-import com.furiqd.domain.model.PetEggType
+import com.furiqd.shared.model.JointPet
+import com.furiqd.shared.model.PetEggType
 import com.furiqd.local.entity.JointPetEntity
 import com.furiqd.network.dto.JointPetDto
 import java.util.Date

@@ -4,8 +4,6 @@ sealed interface OnboardingEvent {
     data class NicknameChanged(val nickname: String) : OnboardingEvent
     data class NameChanged(val name: String) : OnboardingEvent
     object NextClicked : OnboardingEvent
-
-    data class CommonAvatarSelected(val avatarId: Int) : OnboardingEvent
     object UploadCustomAvatarClicked : OnboardingEvent
     class CustomAvatarSelected(val bytes: ByteArray, val uri: String) : OnboardingEvent {
         override fun equals(other: Any?): Boolean {

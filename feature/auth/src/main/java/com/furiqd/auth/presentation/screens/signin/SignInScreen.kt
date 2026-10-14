@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.furiqd.auth.R
-import com.furiqd.auth.presentation.elements.BackButton
+import com.furiqd.shared.ui.elements.BackButton
 import com.furiqd.auth.presentation.elements.LoginWithGoogleButton
 import com.furiqd.auth.presentation.helper.asString
 

@@ -2,9 +2,9 @@ package com.furiqd.data.repositories
 
 import com.furiqd.data.mapper.toDomain
 import com.furiqd.data.mapper.toEntity
-import com.furiqd.domain.model.PairingRoom
-import com.furiqd.domain.model.PetEggType
-import com.furiqd.domain.repository.RoomRepository
+import com.furiqd.shared.model.PairingRoom
+import com.furiqd.shared.model.PetEggType
+import com.furiqd.shared.repository.RoomRepository
 import com.furiqd.local.contract.PairingLocalDataSource
 import com.furiqd.network.contract.RemotePairingDataSource
 import kotlinx.coroutines.flow.Flow
