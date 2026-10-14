@@ -25,7 +25,8 @@ object DatabaseModule {
             context,
             LocalDatabase::class.java,
             "itsalive_db"
-        ).fallbackToDestructiveMigration()
+        )
+            .fallbackToDestructiveMigration(dropAllTables = true)
             .build()
     }
 

@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateRoomViewModel@Inject constructor(
+class CreateRoomViewModel @Inject constructor(
     private val createRoomUseCase: CreateRoomUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateRoomState())
@@ -22,43 +22,52 @@ class CreateRoomViewModel@Inject constructor(
     private val _effect = Channel<CreateRoomEffect>(Channel.BUFFERED)
     val effect = _effect.receiveAsFlow()
 
-    fun handleEvent(event: CreateRoomEvent){
-        when(event){
+    fun handleEvent(event: CreateRoomEvent) {
+        when (event) {
             is CreateRoomEvent.CreateRoomClicked -> {
                 viewModelScope.launch {
                     _uiState.update { it.copy(isLoading = true) }
                     val result = createRoomUseCase.invoke(
                         uiState.value.petName,
-                        uiState.value.petEggType)
+                        uiState.value.petEggType
+                    )
                     result.onSuccess {
                         _effect.trySend(CreateRoomEffect.NavigateToMain)
                     }
                     result.onFailure {
-                        _effect.trySend(CreateRoomEffect
-                            .ShowToast(it.message ?: "Unknown error"))
+                        _uiState.update { state -> state.copy(isLoading = false) }
+                        _effect.trySend(
+                            CreateRoomEffect.ShowToast(it.message ?: "Unknown error")
+                        )
                     }
                 }
-
             }
             is CreateRoomEvent.DismissDialog -> {
                 _effect.trySend(CreateRoomEffect.NavigateToMain)
             }
             is CreateRoomEvent.NameChanged -> {
-                _uiState.update { it.copy( petName = event.name) }
+                _uiState.update { it.copy(petName = event.name) }
             }
             is CreateRoomEvent.NextEggClicked -> {
                 val eggs = CreateRoomState.availableEggs
-
-                _uiState.value = uiState.value.copy(
-                    petEggType = eggs[(uiState.value.petEggType.ordinal + 1) % eggs.size]
-                )
+                if (eggs.isNotEmpty()) {
+                    _uiState.update { state ->
+                        val currentIndex = eggs.indexOf(state.petEggType)
+                        val nextIndex = if (currentIndex != -1) (currentIndex + 1) % eggs.size else 0
+                        state.copy(petEggType = eggs[nextIndex])
+                    }
+                }
             }
             is CreateRoomEvent.PreviousEggClicked -> {
                 val eggs = CreateRoomState.availableEggs
-
-                _uiState.value = uiState.value.copy(
-                    petEggType = eggs[(uiState.value.petEggType.ordinal - 1) % eggs.size]
-                )
+                if (eggs.isNotEmpty()) {
+                    _uiState.update { state ->
+                        val currentIndex = eggs.indexOf(state.petEggType)
+                        val prevIndex = if (currentIndex != -1)
+                                (currentIndex - 1 + eggs.size) % eggs.size else 0
+                        state.copy(petEggType = eggs[prevIndex])
+                    }
+                }
             }
         }
     }

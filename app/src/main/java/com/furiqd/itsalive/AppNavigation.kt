@@ -1,5 +1,6 @@
 package com.furiqd.itsalive
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -52,7 +53,9 @@ fun AppNavigation(
         homeGraph(
             navController = navController,
             onNavigateToAuth = { navController.navigate(AuthGraph)},
-            onNavigateToPairing = { navController.navigate(PairingGraph)}
+            onNavigateToPairing = { navController.navigate(PairingGraph)
+            Log.d("AppNavigation", "Navigating to PairingGraph")
+            }
         )
 
         pairingGraph(
