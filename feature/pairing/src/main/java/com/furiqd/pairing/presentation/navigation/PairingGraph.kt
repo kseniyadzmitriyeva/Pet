@@ -11,7 +11,7 @@ fun NavGraphBuilder.pairingGraph(
     navController: NavController,
     onNavigateToMain: () -> Unit
 ) {
-    navigation<PairingGraph>(startDestination = HostDestination) {
+    navigation<PairingGraph>(startDestination = HostDestination::class) {
         composable<HostDestination> {
             Log.d("PairingGraph", "Navigating to HostScreenRoute")
             HostScreenRoute(
@@ -19,4 +19,8 @@ fun NavGraphBuilder.pairingGraph(
             )
         }
     }
+}
+
+fun NavController.navigateToPairing(roomId: String) {
+    navigate(HostDestination(roomId = roomId))
 }

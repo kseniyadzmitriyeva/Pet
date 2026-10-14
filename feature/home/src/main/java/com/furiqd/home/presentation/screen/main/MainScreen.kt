@@ -70,8 +70,7 @@ fun MainScreen(
                 is RoomUiModel.WaitingForFriend -> {
                     WaitingForFriendRoomCard(
                         room = room,
-                        onInviteClick = {
-                            onEvent(MainEvent.CopyInviteCodeClicked(room.inviteCode)) },
+                        onClick = { onEvent(MainEvent.WaitingFriendRoomClicked(room.id)) },
                         modifier = modifier
                     )
                 }
@@ -87,7 +86,7 @@ fun MainRoute(
     onNavigateToProfile: () -> Unit,
     onNavigateToAuth: () -> Unit,
     onNavigateToCreateRoom: () -> Unit,
-    onNavigateToPairing: () -> Unit,
+    onNavigateToPairing: (roomId: String) -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
      val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -105,7 +104,8 @@ fun MainRoute(
                     onNavigateToProfile()
                 }
                 is MainEffect.NavigateToPairing -> {
-                    onNavigateToPairing()
+                    val (roomId) = effect
+                    onNavigateToPairing(roomId)
                 }
                 is MainEffect.CreateRoom -> onNavigateToCreateRoom()
             }

@@ -111,6 +111,10 @@ class MainViewModel @Inject constructor(
                 val targetRoomId = _uiState.value.previousRoom?.id ?: return
                 changeSelectedRoom(targetRoomId)
             }
+
+            is MainEvent.WaitingFriendRoomClicked -> {
+                sendEffect(MainEffect.NavigateToPairing(event.roomId))
+            }
         }
     }
 

@@ -7,5 +7,5 @@ sealed interface MainEffect {
     object NavigateToAuth : MainEffect
     object TriggerPetAnimation : MainEffect
     object CreateRoom : MainEffect
-    object NavigateToPairing : MainEffect
+    data class NavigateToPairing(val roomId: String) : MainEffect
 }

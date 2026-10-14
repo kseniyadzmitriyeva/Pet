@@ -52,7 +52,7 @@ private const val TIMER_DELAY_MILLIS = 1000L
 @Composable
 fun WaitingForFriendRoomCard(
     room: RoomUiModel.WaitingForFriend,
-    onInviteClick: () -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var millisLeft by remember(room.expiringTime) {
@@ -83,7 +83,7 @@ fun WaitingForFriendRoomCard(
 
     Card(
         modifier = modifier,
-        onClick = onInviteClick
+        onClick = onClick
     ) {
         Column(
             modifier = modifier
@@ -240,7 +240,7 @@ private fun WaitingForFriendRoomCardPreview() {
                     userAvatarUrl = null,
                     friendAvatarUrl = null
                 ),
-                onInviteClick = {},
+                onClick = {},
                 modifier = Modifier.fillMaxSize()
             )
         }

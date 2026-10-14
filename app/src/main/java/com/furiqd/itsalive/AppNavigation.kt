@@ -10,6 +10,7 @@ import com.furiqd.auth.presentation.navigation.AuthGraph
 import com.furiqd.home.presentation.navigation.HomeGraph
 import com.furiqd.home.presentation.navigation.homeGraph
 import com.furiqd.pairing.presentation.navigation.PairingGraph
+import com.furiqd.pairing.presentation.navigation.navigateToPairing
 import com.furiqd.pairing.presentation.navigation.pairingGraph
 import com.furiqd.personalisation.presentation.navigation.personalisationGraph
 import com.furiqd.personalisation.presentation.navigation.PersonalisationGraph
@@ -52,15 +53,17 @@ fun AppNavigation(
 
         homeGraph(
             navController = navController,
-            onNavigateToAuth = { navController.navigate(AuthGraph)},
-            onNavigateToPairing = { navController.navigate(PairingGraph)
-            Log.d("AppNavigation", "Navigating to PairingGraph")
+            onNavigateToAuth = { navController.navigate(AuthGraph) },
+            onNavigateToPairing = { roomId ->
+                navController.navigateToPairing(roomId = roomId)
             }
         )
 
         pairingGraph(
             navController = navController,
-            onNavigateToMain = { navController.navigate(HomeGraph)}
+            onNavigateToMain = { navController.navigate(HomeGraph) {
+                popUpTo(PairingGraph) { inclusive = true }
+            }}
         )
     }
 }

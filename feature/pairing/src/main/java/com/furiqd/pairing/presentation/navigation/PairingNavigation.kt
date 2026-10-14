@@ -6,4 +6,4 @@ import kotlinx.serialization.Serializable
 data object PairingGraph
 
 @Serializable
-data object HostDestination
+data class HostDestination(val roomId: String)
