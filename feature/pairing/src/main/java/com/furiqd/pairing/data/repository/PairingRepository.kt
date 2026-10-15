@@ -9,7 +9,7 @@ import com.furiqd.shared.domain.model.PetEggType
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-interface PairingRepository {
+internal interface PairingRepository {
     suspend fun createRoom(
         hostUserId: String,
         petName: String,

@@ -161,8 +161,8 @@ fun StartScreen(
 fun StartRoute(
     onNavigateToSignUp: () -> Unit,
     onNavigateToLogin: () -> Unit,
-    viewModel: StartViewModel = hiltViewModel()
 ){
+    val viewModel: StartViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { effect ->
             when (effect) {

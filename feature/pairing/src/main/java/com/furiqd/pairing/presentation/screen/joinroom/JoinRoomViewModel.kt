@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class JoinRoomViewModel @Inject constructor(
+internal class JoinRoomViewModel @Inject constructor(
     private val joinRoomUseCase: JoinRoomUseCase
 ) : ViewModel() {
 

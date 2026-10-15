@@ -191,9 +191,9 @@ fun SignUpRoute(
     onNavigateToWelcome: (Boolean) -> Unit,
     onNavigateBack: () -> Unit,
     onNavigateToSignIn: () -> Unit,
-    viewModel: SignUpViewModel = hiltViewModel(),
     authHelper: AuthWithGoogleHelper = remember { AuthWithGoogleHelper() }
 ) {
+    val viewModel: SignUpViewModel = hiltViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()

@@ -45,9 +45,9 @@ import com.furiqd.shared.ui.elements.TextActionButton
 fun JoinRoomRoute(
     onNavigateBack: () -> Unit,
     onNavigateToRoom: (roomId: String) -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: JoinRoomViewModel = hiltViewModel()
+    modifier: Modifier = Modifier
 ) {
+    val viewModel: JoinRoomViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 

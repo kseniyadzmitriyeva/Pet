@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class StartViewModel@Inject constructor() : ViewModel(){
+internal class StartViewModel@Inject constructor() : ViewModel(){
 
     private val _uiEffect = Channel<StartEffect>()
     val uiEffect = _uiEffect.receiveAsFlow()

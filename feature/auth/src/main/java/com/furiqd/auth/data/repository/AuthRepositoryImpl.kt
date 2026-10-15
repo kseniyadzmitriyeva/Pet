@@ -4,7 +4,7 @@ import com.furiqd.network.datasource.AuthWithFirebaseAuthenticator
 import com.furiqd.shared.domain.model.AuthResult
 import javax.inject.Inject
 
-class AuthRepositoryImpl @Inject constructor(
+internal class AuthRepositoryImpl @Inject constructor(
     private val authWithFirebaseAuthenticator: AuthWithFirebaseAuthenticator
 ) : AuthRepository {
 

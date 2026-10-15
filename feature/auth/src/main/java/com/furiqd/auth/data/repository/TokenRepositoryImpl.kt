@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
-class TokenRepositoryImpl @Inject constructor(
+internal class TokenRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<String>
 ) : TokenRepository {
 

@@ -6,7 +6,7 @@ import com.furiqd.auth.data.repository.TokenRepository
 import com.furiqd.shared.domain.repository.UserRepository
 import javax.inject.Inject
 
-class SignInWithEmailAndPasswordUseCase @Inject constructor(
+internal class SignInWithEmailAndPasswordUseCase @Inject constructor(
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
     private val tokenRepository: TokenRepository
@@ -25,7 +25,7 @@ class SignInWithEmailAndPasswordUseCase @Inject constructor(
     }
 }
 
-class SignUpWithEmailAndPasswordUseCase @Inject constructor(
+internal class SignUpWithEmailAndPasswordUseCase @Inject constructor(
     private val authRepository: AuthRepository,
     private val tokenRepository: TokenRepository,
     private val userRepository: UserRepository
@@ -52,7 +52,7 @@ class SignUpWithEmailAndPasswordUseCase @Inject constructor(
     }
 }
 
-class SignInWithGoogleUseCase @Inject constructor(
+internal class SignInWithGoogleUseCase @Inject constructor(
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
     private val tokenRepository: TokenRepository
@@ -85,7 +85,7 @@ class SignInWithGoogleUseCase @Inject constructor(
     }
 }
 
-data class AuthUseCases @Inject constructor(
+internal data class AuthUseCases @Inject constructor(
     val signInWithEmailAndPassword: SignInWithEmailAndPasswordUseCase,
     val signUpWithEmailAndPassword: SignUpWithEmailAndPasswordUseCase,
     val signInWithGoogle: SignInWithGoogleUseCase

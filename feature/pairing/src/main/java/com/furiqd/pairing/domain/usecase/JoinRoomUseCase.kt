@@ -4,7 +4,7 @@ import com.furiqd.pairing.data.repository.PairingRepository
 import com.furiqd.shared.domain.repository.UserRepository
 import javax.inject.Inject
 
-class JoinRoomUseCase@Inject constructor(
+internal class JoinRoomUseCase@Inject constructor(
     private val userRepository: UserRepository,
     private val roomRepository: PairingRepository,
 ) {

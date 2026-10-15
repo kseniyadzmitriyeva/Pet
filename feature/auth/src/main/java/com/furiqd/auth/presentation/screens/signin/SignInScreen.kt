@@ -230,8 +230,8 @@ fun SignInRoute(
     onNavigateBack: () -> Unit,
     onNavigateToSignUp: () -> Unit,
     onNavigateToForgotPassword: () -> Unit,
-    viewModel: SignInViewModel = hiltViewModel()
 ) {
+    val viewModel: SignInViewModel = hiltViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
