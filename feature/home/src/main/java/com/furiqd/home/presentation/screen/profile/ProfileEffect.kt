@@ -5,4 +5,5 @@ interface ProfileEffect {
     data object NavigateToAuth : ProfileEffect
     data object NavigateToEditProfile : ProfileEffect
     data object AddAvatar: ProfileEffect
+    data class ShowToast(val message: String) : ProfileEffect
 }
