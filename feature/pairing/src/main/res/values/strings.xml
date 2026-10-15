@@ -10,4 +10,23 @@
     <string name="share_invite_text">Lets get together with %1$s! Invite code: %2$s</string>
     <string name="share_chooser_title">Invite</string>
     <string name="avatar_plus_symbol">+</string>
+
+    <string name="create_room_title">New Companion</string>
+    <string name="create_room_name_label">How should we call it?</string>
+    <string name="create_room_name_hint">Ex: Eggbert</string>
+    <string name="create_room_action_create">Let\'s Go!</string>
+    <string name="create_room_action_cancel">Maybe later</string>
+    <string name="create_room_pet_description">Pet selection</string>
+
+    <string name="pairing_choice_title">Select Action</string>
+    <string name="pairing_choice_close_content_description">Close dialog</string>
+    <string name="pairing_choice_create_room_title">Create Room</string>
+    <string name="pairing_choice_create_room_description">Become a host and invite your partner</string>
+    <string name="pairing_choice_join_room_title">Join Room</string>
+    <string name="pairing_choice_join_room_description">Enter code to join an existing room</string>
+
+    <string name="join_room_title">Join Room</string>
+    <string name="join_room_subtitle">Enter the 6-digit invitation code to enter the room</string>
+    <string name="join_room_action_submit">Join</string>
+    <string name="join_room_icon_content_description">Join room icon</string>
 </resources>

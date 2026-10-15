@@ -34,12 +34,14 @@ class RoomRepositoryImpl @Inject constructor(
     override suspend fun joinRoom(
         inviteCode: String,
         friendUserId: String
-    ): Result<Unit> {
-        return runCatching {
+    ): Result<String> {
+        runCatching {
             val roomId = remoteDataSource.executeJoinTransaction(inviteCode, friendUserId)
             localDataSource.saveRoomId(roomId)
             localDataSource.setPairingComplete(true)
+            return Result.success(roomId)
         }
+        return Result.failure(Exception("Failed to join room"))
     }
 
     override fun observeCurrentRoom(roomId: String): Flow<PairingRoom?> {

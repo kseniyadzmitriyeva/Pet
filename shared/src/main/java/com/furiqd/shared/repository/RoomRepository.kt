@@ -8,7 +8,7 @@ interface RoomRepository {
     suspend fun createRoom(hostUserId: String,
                            petName: String,
                            petEggType: PetEggType): Result<String>
-    suspend fun joinRoom(inviteCode: String, friendUserId: String): Result<Unit>
+    suspend fun joinRoom(inviteCode: String, friendUserId: String): Result<String>
     fun observeCurrentRoom(roomId: String): Flow<PairingRoom?>
     suspend fun checkUserHasActiveRoom(userId: String): Result<String?>
     suspend fun uploadUserPhoto(roomId: String, userId: String, imageBytes: ByteArray): Result<Unit>

@@ -7,3 +7,12 @@ data object PairingGraph
 
 @Serializable
 data class HostDestination(val roomId: String)
+
+@Serializable
+data object JoinRoomDestination
+
+@Serializable
+data object CreateRoomDestination
+
+@Serializable
+data object ChoiceDestination
