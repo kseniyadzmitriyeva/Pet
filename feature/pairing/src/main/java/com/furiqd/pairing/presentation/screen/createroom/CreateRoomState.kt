@@ -1,4 +1,4 @@
-package com.furiqd.home.presentation.screen.createroom
+package com.furiqd.pairing.presentation.screen.createroom
 
 import com.furiqd.shared.model.PetEggType
 

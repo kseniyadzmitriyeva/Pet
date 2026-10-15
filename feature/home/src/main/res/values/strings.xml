@@ -26,14 +26,6 @@
     <string name="action_incite_friend">Nudge Your Friend</string>
     <string name="action_waiting_friend">Waiting for your friend…</string>
 
-    <string name="create_room_title">New Companion</string>
-    <string name="create_room_name_label">How should we call it?</string>
-    <string name="create_room_name_hint">Ex: Eggbert</string>
-    <string name="create_room_action_create">Let\'s Go!</string>
-    <string name="create_room_action_cancel">Maybe later</string>
-    <string name="create_room_pet_description">Pet selection</string>
-
-
     <string name="room_expires_in">Room expires in %1$s</string>
     <string name="room_expired">Room expired</string>
     <string name="waiting_for_friend_title">Waiting for your friend!</string>

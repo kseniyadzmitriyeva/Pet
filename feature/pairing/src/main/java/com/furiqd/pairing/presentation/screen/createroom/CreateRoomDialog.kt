@@ -1,4 +1,4 @@
-package com.furiqd.home.presentation.screen.createroom
+package com.furiqd.pairing.presentation.screen.createroom
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -22,9 +22,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.furiqd.shared.config.PetEggConfig
-import com.furiqd.home.R
+import com.furiqd.pairing.R
 
 @Composable
 fun CreateRoomDialog(

@@ -1,8 +1,8 @@
-package com.furiqd.home.presentation.screen.createroom
+package com.furiqd.pairing.presentation.screen.createroom
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.furiqd.home.domain.usecase.CreateRoomUseCase
+import com.furiqd.pairing.domain.usecase.CreateRoomUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

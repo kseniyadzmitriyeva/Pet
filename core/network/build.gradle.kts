@@ -6,18 +6,19 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
     namespace = "com.furiqd.network"
     compileSdk = 36
+
     buildFeatures {
         buildConfig = true
     }
 
     defaultConfig {
         minSdk = 26
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
 
@@ -31,18 +32,12 @@ android {
         buildConfigField("String", "WORKER_ENDPOINT", "\"$workerEndpoint\"")
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = "11"
     }
 }
 
@@ -51,11 +46,10 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.transport.runtime)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
-    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.okhttp)
 

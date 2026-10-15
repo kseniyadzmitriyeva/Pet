@@ -1,6 +1,10 @@
 package com.furiqd.shared.ui.elements
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarData
@@ -23,7 +27,8 @@ fun ErrorSnackbar(
         shape = RoundedCornerShape(16.dp),
         containerColor = MaterialTheme.colorScheme.errorContainer,
         contentColor = MaterialTheme.colorScheme.onErrorContainer,
-        actionContentColor = MaterialTheme.colorScheme.error,
+        actionContentColor = MaterialTheme.colorScheme.onErrorContainer, // Правильный контраст для кнопки на errorContainer
+        dismissActionContentColor = MaterialTheme.colorScheme.onErrorContainer,
         action = if (actionLabel != null) {
             {
                 TextButton(
@@ -31,8 +36,19 @@ fun ErrorSnackbar(
                 ) {
                     Text(
                         text = actionLabel,
-                        color = MaterialTheme.colorScheme.error,
                         fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        } else null,
+        dismissAction = if (snackbarData.visuals.withDismissAction) {
+            {
+                IconButton(
+                    onClick = { snackbarData.dismiss() }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = null
                     )
                 }
             }

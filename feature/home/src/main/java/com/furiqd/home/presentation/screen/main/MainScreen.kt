@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -13,7 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.furiqd.home.presentation.element.ActiveRoomCard
 import com.furiqd.home.presentation.element.CreateRoomPlaceholderCard
@@ -63,14 +64,14 @@ fun MainScreen(
                 is RoomUiModel.Placeholder -> {
                     CreateRoomPlaceholderCard(
                         onCreateRoomClick = {
-                            onEvent(MainEvent.AddRoomClicked) },
+                            onEvent(MainEvent.OpenCreateRoomDialogClicked) },
                         modifier = modifier
                     )
                 }
                 is RoomUiModel.WaitingForFriend -> {
                     WaitingForFriendRoomCard(
                         room = room,
-                        onClick = { onEvent(MainEvent.WaitingFriendRoomClicked(room.id)) },
+                        onClick = { /*onEvent(MainEvent.WaitingFriendRoomClicked(room.id))*/ },
                         modifier = modifier
                     )
                 }
@@ -85,8 +86,7 @@ fun MainScreen(
 fun MainRoute(
     onNavigateToProfile: () -> Unit,
     onNavigateToAuth: () -> Unit,
-    onNavigateToCreateRoom: () -> Unit,
-    onNavigateToPairing: (roomId: String) -> Unit,
+    onNavigateToPairing: () -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
      val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -104,10 +104,8 @@ fun MainRoute(
                     onNavigateToProfile()
                 }
                 is MainEffect.NavigateToPairing -> {
-                    val (roomId) = effect
-                    onNavigateToPairing(roomId)
+                    onNavigateToPairing()
                 }
-                is MainEffect.CreateRoom -> onNavigateToCreateRoom()
             }
         }
     }

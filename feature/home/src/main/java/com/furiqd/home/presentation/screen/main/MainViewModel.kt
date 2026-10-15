@@ -89,8 +89,8 @@ class MainViewModel @Inject constructor(
                 sendEffect(MainEffect.CopyToClipboard(event.code))
             }
 
-            is MainEvent.AddRoomClicked, MainEvent.OpenCreateRoomDialogClicked -> {
-                sendEffect(MainEffect.CreateRoom)
+            is MainEvent.OpenCreateRoomDialogClicked -> {
+                sendEffect(MainEffect.NavigateToPairing)
             }
 
             is MainEvent.LeaveRoomClicked -> {
@@ -110,10 +110,6 @@ class MainViewModel @Inject constructor(
             is MainEvent.RoomChangedToPreviousInPager -> {
                 val targetRoomId = _uiState.value.previousRoom?.id ?: return
                 changeSelectedRoom(targetRoomId)
-            }
-
-            is MainEvent.WaitingFriendRoomClicked -> {
-                sendEffect(MainEffect.NavigateToPairing(event.roomId))
             }
         }
     }

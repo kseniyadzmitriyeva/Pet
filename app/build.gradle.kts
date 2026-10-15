@@ -5,10 +5,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
-}
-
-configurations.all {
-    exclude(group = "com.intellij", module = "annotations")
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -41,6 +38,9 @@ android {
     buildFeatures {
         compose = true
     }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
 }
 
 dependencies {
@@ -71,7 +71,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

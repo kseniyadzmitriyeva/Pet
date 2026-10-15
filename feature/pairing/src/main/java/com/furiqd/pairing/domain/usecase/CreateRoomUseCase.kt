@@ -1,4 +1,4 @@
-package com.furiqd.home.domain.usecase
+package com.furiqd.pairing.domain.usecase
 
 import com.furiqd.shared.model.PetEggType
 import com.furiqd.shared.repository.RoomRepository

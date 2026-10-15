@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -12,7 +13,6 @@ android {
 
     defaultConfig {
         minSdk = 26
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -24,10 +24,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             val clientId = project.findProperty("GOOGLE_WEB_CLIENT_ID")?.toString() ?: ""
             buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$clientId\"")
         }
@@ -36,16 +33,22 @@ android {
             buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$clientId\"")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
     implementation(project(":shared"))
+    
+    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
@@ -55,13 +58,15 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     implementation(libs.hilt.android)
-    implementation(libs.firebase.firestore)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
-
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services)
     implementation(libs.google.googleid)
@@ -69,8 +74,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
