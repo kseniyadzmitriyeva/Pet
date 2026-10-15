@@ -1,4 +1,4 @@
-package com.furiqd.shared.domain.repository
+package com.furiqd.auth.data.repository
 
 import com.furiqd.shared.domain.model.AuthResult
 

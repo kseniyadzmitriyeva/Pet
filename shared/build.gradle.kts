@@ -50,7 +50,6 @@ dependencies {
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.androidx.datastore.preferences)
     implementation(libs.tink.android)
     implementation(libs.hilt.android)
     implementation(libs.gson)

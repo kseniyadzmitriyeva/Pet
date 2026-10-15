@@ -1,4 +1,4 @@
-package com.furiqd.shared.domain.repository
+package com.furiqd.auth.data.repository
 
 import kotlinx.coroutines.flow.Flow
 
