@@ -2,8 +2,8 @@ package com.furiqd.home.presentation.screen.main.mapper
 
 import com.furiqd.home.presentation.screen.main.RoomUiModel
 import com.furiqd.shared.config.PetEggConfig
-import com.furiqd.shared.model.PairingRoomWithDetails
-import com.furiqd.shared.model.RoomStatus
+import com.furiqd.shared.domain.model.PairingRoomWithDetails
+import com.furiqd.shared.domain.model.RoomStatus
 import com.furiqd.shared.util.ImageUrlFormatter
 
 fun PairingRoomWithDetails.toUiModel(

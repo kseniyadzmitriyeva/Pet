@@ -2,8 +2,8 @@ package com.furiqd.pairing.data.mapper
 
 import com.furiqd.local.entity.JointPetEntity
 import com.furiqd.pairing.data.datasource.model.dto.JointPetDto
-import com.furiqd.shared.model.JointPet
-import com.furiqd.shared.model.PetEggType
+import com.furiqd.shared.domain.model.JointPet
+import com.furiqd.shared.domain.model.PetEggType
 import java.util.Date
 
 fun JointPetEntity.toDomain() = JointPet(

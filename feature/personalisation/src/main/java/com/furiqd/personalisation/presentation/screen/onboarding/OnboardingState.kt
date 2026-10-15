@@ -1,7 +1,7 @@
 package com.furiqd.personalisation.presentation.screen.onboarding
 
 import androidx.compose.runtime.Immutable
-import com.furiqd.shared.model.Avatar
+import com.furiqd.shared.domain.model.Avatar
 
 
 @Immutable

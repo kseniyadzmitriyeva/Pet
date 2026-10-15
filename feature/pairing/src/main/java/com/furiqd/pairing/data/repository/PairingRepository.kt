@@ -4,8 +4,8 @@ import com.furiqd.pairing.data.datasource.PairingLocalDataSource
 import com.furiqd.pairing.data.datasource.PairingRemoteDataSource
 import com.furiqd.pairing.data.datasource.RoomException
 import com.furiqd.pairing.data.mapper.toDomain
-import com.furiqd.shared.model.PairingRoom
-import com.furiqd.shared.model.PetEggType
+import com.furiqd.shared.domain.model.PairingRoom
+import com.furiqd.shared.domain.model.PetEggType
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

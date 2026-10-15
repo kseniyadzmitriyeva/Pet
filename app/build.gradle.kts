@@ -62,7 +62,6 @@ dependencies {
     implementation(project(":feature:home"))
     implementation(project(":feature:pairing"))
     implementation(project(":shared"))
-    implementation(project(":core:data"))
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)

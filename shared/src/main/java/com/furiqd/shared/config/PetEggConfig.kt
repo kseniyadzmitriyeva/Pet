@@ -1,7 +1,7 @@
 package com.furiqd.shared.config
 
 import com.furiqd.shared.R
-import com.furiqd.shared.model.PetEggType
+import com.furiqd.shared.domain.model.PetEggType
 
 object PetEggConfig {
     fun getDrawableByType(type: PetEggType): Int {

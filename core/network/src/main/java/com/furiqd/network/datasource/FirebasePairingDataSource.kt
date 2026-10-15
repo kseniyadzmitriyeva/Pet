@@ -1,9 +1,6 @@
 package com.furiqd.network.datasource
 
-import android.util.Log
-import com.furiqd.shared.model.PetEggType
 import com.furiqd.network.contract.RemotePairingDataSource
-import com.furiqd.network.dto.JointPetDto
 import com.furiqd.network.dto.PairingRoomDto
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Filter
@@ -14,7 +11,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import java.util.Date
-import java.util.UUID
 import javax.inject.Inject
 
 class FirebasePairingDataSource @Inject constructor(
@@ -33,30 +29,7 @@ class FirebasePairingDataSource @Inject constructor(
         return !querySnapshot.isEmpty
     }
 
-    override suspend fun createRoom(hostUserId: String,
-                                    uniqueCode: String,
-                                    petName: String,
-                                    petEggType: PetEggType
-    ): String {
-        val newRoomDto = PairingRoomDto(
-            code = uniqueCode,
-            hostId = hostUserId,
-            friendId = null,
-            status = "WAITING",
-            createdAt = Date(),
-            pet = JointPetDto(
-                id = UUID.randomUUID().toString(),
-                name = petName,
-                petEggType = petEggType.id,
-                stage = "EGG",
-                level = 1,
-                experience = 0,
-                hatchedAt = null
-            )
-        )
-
-        Log.d("FirebasePairingDataSource", "Creating room with data: $newRoomDto,$petName, $petEggType")
-
+    override suspend fun createRoom(newRoomDto: PairingRoomDto): String {
         val documentRef = roomsCollection.add(newRoomDto).await()
         return documentRef.id
     }

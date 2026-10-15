@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.furiqd.home.domain.usecase.FetchRoomsUseCase
 import com.furiqd.home.presentation.screen.main.mapper.toUiModel
-import com.furiqd.shared.usecase.GetUserUseCase
+import com.furiqd.shared.domain.usecase.GetUserUseCase
 import com.furiqd.shared.util.ImageUrlFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi

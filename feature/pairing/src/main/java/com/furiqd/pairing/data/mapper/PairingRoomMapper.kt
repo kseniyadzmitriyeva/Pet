@@ -1,7 +1,7 @@
 package com.furiqd.pairing.data.mapper
 
-import com.furiqd.shared.model.PairingRoom
-import com.furiqd.shared.model.RoomStatus
+import com.furiqd.shared.domain.model.PairingRoom
+import com.furiqd.shared.domain.model.RoomStatus
 import com.furiqd.pairing.data.datasource.model.dto.PairingRoomDto
 
 fun PairingRoomDto.toDomain(): PairingRoom {

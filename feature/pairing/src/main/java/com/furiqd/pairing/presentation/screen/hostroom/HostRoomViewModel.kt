@@ -4,9 +4,9 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.furiqd.shared.model.PairingRoom
+import com.furiqd.shared.domain.model.PairingRoom
 import com.furiqd.pairing.domain.usecase.FormatRoomTimeLeftUseCase
-import com.furiqd.shared.usecase.GetPairingRoomUseCase
+import com.furiqd.shared.domain.usecase.GetPairingRoomUseCase
 import com.furiqd.pairing.domain.usecase.RoomTimerResult
 import com.furiqd.pairing.presentation.util.ClipboardManagerWrapper
 import com.furiqd.pairing.presentation.util.ShareManager

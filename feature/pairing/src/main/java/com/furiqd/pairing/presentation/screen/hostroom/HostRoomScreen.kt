@@ -51,7 +51,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.furiqd.shared.ui.theme.ItsAliveTheme
-import com.furiqd.shared.model.PairingRoom
+import com.furiqd.shared.domain.model.PairingRoom
 import com.furiqd.pairing.R
 import com.furiqd.shared.R.drawable
 import java.util.Date

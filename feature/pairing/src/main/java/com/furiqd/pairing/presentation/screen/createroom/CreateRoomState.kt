@@ -1,6 +1,6 @@
 package com.furiqd.pairing.presentation.screen.createroom
 
-import com.furiqd.shared.model.PetEggType
+import com.furiqd.shared.domain.model.PetEggType
 
 data class CreateRoomState (
     val petName : String = "",

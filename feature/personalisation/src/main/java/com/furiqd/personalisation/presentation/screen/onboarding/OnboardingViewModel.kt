@@ -2,17 +2,14 @@ package com.furiqd.personalisation.presentation.screen.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.furiqd.personalisation.domain.GetAvatarsUseCase
 import com.furiqd.personalisation.domain.SaveUserUseCase
-import com.furiqd.shared.model.User
-import com.furiqd.shared.repository.UserRepository
-import com.furiqd.shared.usecase.UpdateAvatarUseCase
+import com.furiqd.shared.domain.model.User
+import com.furiqd.shared.domain.repository.UserRepository
+import com.furiqd.shared.domain.usecase.UpdateAvatarUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -20,7 +17,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
-    private val getAvailableAvatarsUseCase: GetAvatarsUseCase,
     private val saveUserUseCase: SaveUserUseCase,
     private val userRepository: UserRepository,
     private val updateAvatarUseCase: UpdateAvatarUseCase
@@ -31,10 +27,6 @@ class OnboardingViewModel @Inject constructor(
 
     private val _effect = Channel<OnboardingEffect>()
     val effect = _effect.receiveAsFlow()
-
-    init {
-        observeAvatars()
-    }
 
     fun handleEvent(event: OnboardingEvent) {
         when (event) {
@@ -136,14 +128,5 @@ class OnboardingViewModel @Inject constructor(
                     )
                 }
         }
-    }
-
-    private fun observeAvatars() {
-        _uiState.update { it.copy(isLoading = true) }
-        getAvailableAvatarsUseCase()
-            .onEach { avatarList ->
-                _uiState.update { it.copy(avatars = avatarList, isLoading = false) }
-            }
-            .launchIn(viewModelScope)
     }
 }

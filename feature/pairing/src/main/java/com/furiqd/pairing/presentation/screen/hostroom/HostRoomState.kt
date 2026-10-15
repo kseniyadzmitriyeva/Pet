@@ -1,6 +1,6 @@
 package com.furiqd.pairing.presentation.screen.hostroom
 
-import com.furiqd.shared.model.PairingRoom
+import com.furiqd.shared.domain.model.PairingRoom
 
 sealed interface HostRoomState {
     data object Loading : HostRoomState

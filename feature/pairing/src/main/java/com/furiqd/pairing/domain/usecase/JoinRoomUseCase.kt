@@ -1,7 +1,7 @@
 package com.furiqd.pairing.domain.usecase
 
 import com.furiqd.pairing.data.repository.PairingRepository
-import com.furiqd.shared.repository.UserRepository
+import com.furiqd.shared.domain.repository.UserRepository
 import javax.inject.Inject
 
 class JoinRoomUseCase@Inject constructor(

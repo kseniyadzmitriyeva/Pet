@@ -17,7 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.furiqd.auth.presentation.navigation.AuthGraph
 import com.furiqd.shared.ui.theme.ItsAliveTheme
-import com.furiqd.shared.model.UserSessionState
+import com.furiqd.shared.domain.model.UserSessionState
 import com.furiqd.home.presentation.navigation.HomeGraph
 import com.furiqd.personalisation.presentation.navigation.PersonalisationGraph
 import dagger.hilt.android.AndroidEntryPoint
