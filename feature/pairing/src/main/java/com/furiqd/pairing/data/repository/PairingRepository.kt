@@ -17,7 +17,8 @@ interface PairingRepository {
     ): Result<PairingRoom>
 
     suspend fun joinRoom(
-        inviteCode: String
+        inviteCode: String,
+        userId: String
     ): Result<String>
     suspend fun getPairingRoom(roomId: String): Result<PairingRoom>
     fun observeRoomState(roomId: String): Flow<PairingRoom>
@@ -48,10 +49,9 @@ internal class PairingRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun joinRoom(inviteCode: String): Result<String> {
+    override suspend fun joinRoom(inviteCode: String, userId: String): Result<String> {
         return runCatching {
-
-            val roomId = remoteDataSource.joinRoom(inviteCode)
+            val roomId = remoteDataSource.joinRoom(inviteCode, userId)
             localDataSource.saveRoomId(roomId)
             localDataSource.setPairingComplete(true)
 

@@ -24,15 +24,17 @@ fun NavGraphBuilder.pairingGraph(
         composable<JoinRoomDestination> {
             JoinRoomRoute(
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToRoom = { roomId ->
-                    navController.navigate(HostDestination(roomId))
+                onNavigateToRoom = { onNavigateToMain()
                 }
             )
         }
 
         composable<CreateRoomDestination> {
             CreateRoomRoute(
-                onNavigateToMain = { onNavigateToMain() }
+                onNavigateToMain = { onNavigateToMain() },
+                onNavigateToHost = { roomId ->
+                    navController.navigate(HostDestination(roomId))
+                }
             )
         }
 

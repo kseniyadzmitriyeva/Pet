@@ -21,7 +21,8 @@ interface PairingRemoteDataSource {
     ): String
 
     suspend fun joinRoom(
-        inviteCode: String
+        inviteCode: String,
+        userId: String
     ): String
 
     suspend fun getPairingRoom(roomId: String): PairingRoomDto?
@@ -62,7 +63,7 @@ internal class FirebasePairingDataSource @Inject constructor(
         return documentRef.id
     }
 
-    override suspend fun joinRoom(inviteCode: String): String {
+    override suspend fun joinRoom(inviteCode: String, userId: String): String {
         val querySnapshot = roomsCollection
             .whereEqualTo(RoomConstants.Fields.CODE, inviteCode)
             .whereEqualTo(RoomConstants.Fields.STATUS, RoomConstants.Status.WAITING)
@@ -85,6 +86,7 @@ internal class FirebasePairingDataSource @Inject constructor(
                 throw RoomException.RoomAlreadyOccupiedException()
             }
 
+            transaction.update(roomRef, RoomConstants.Fields.FRIEND_ID, userId)
             transaction.update(roomRef, RoomConstants.Fields.STATUS, RoomConstants.Status.ACTIVE)
             transaction.update(roomRef, RoomConstants.Fields.PET_STAGE, RoomConstants.PetStage.BABY)
             transaction.update(roomRef, RoomConstants.Fields.PET_HATCHED_AT, Date())

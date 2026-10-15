@@ -1,5 +1,6 @@
 package com.furiqd.pairing.presentation.screen.createroom
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.furiqd.pairing.domain.usecase.CreateRoomUseCase
@@ -32,7 +33,8 @@ class CreateRoomViewModel @Inject constructor(
                         uiState.value.petEggType
                     )
                     result.onSuccess {
-                        _effect.trySend(CreateRoomEffect.NavigateToMain)
+                        Log.d("CreateRoom", "Room created with ID: $it")
+                        _effect.trySend(CreateRoomEffect.NavigateToHost(it))
                     }
                     result.onFailure {
                         _uiState.update { state -> state.copy(isLoading = false) }

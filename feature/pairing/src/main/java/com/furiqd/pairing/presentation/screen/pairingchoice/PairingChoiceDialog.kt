@@ -37,65 +37,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.furiqd.pairing.R
 import com.furiqd.shared.ui.elements.ErrorSnackbar
-
-@Composable
-fun PairingChoiceDialog(
-    onEvent: (PairingChoiceEvent) -> Unit
-) {
-    Dialog(onDismissRequest = { onEvent(PairingChoiceEvent.OnDismiss) }) {
-        Surface(
-            shape = RoundedCornerShape(28.dp),
-            color = MaterialTheme.colorScheme.surface,
-            tonalElevation = 6.dp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(24.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = stringResource(R.string.pairing_choice_title),
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                    IconButton(onClick = { onEvent(PairingChoiceEvent.OnDismiss) }) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = stringResource(R.string.pairing_choice_close_content_description)
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                ChoiceCard(
-                    title = stringResource(R.string.pairing_choice_create_room_title),
-                    description = stringResource(R.string.pairing_choice_create_room_description),
-                    icon = Icons.Default.Add,
-                    onClick = { onEvent(PairingChoiceEvent.OnCreateRoomClicked) }
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                ChoiceCard(
-                    title = stringResource(R.string.pairing_choice_join_room_title),
-                    description = stringResource(R.string.pairing_choice_join_room_description),
-                    icon = Icons.Default.GroupAdd,
-                    onClick = { onEvent(PairingChoiceEvent.OnJoinRoomClicked) }
-                )
-            }
-        }
-    }
-}
-
 @Composable
 private fun ChoiceCard(
     title: String,

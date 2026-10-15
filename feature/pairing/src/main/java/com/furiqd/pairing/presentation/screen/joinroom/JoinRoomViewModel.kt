@@ -58,7 +58,7 @@ class JoinRoomViewModel @Inject constructor(
                     _uiState.update { it.copy(isLoading = false) }
                     _effect.send(
                         JoinRoomEffect.ShowToast(
-                            error.localizedMessage ?: "Не удалось подключиться к комнате"
+                            error.localizedMessage!!
                         )
                     )
                 }
