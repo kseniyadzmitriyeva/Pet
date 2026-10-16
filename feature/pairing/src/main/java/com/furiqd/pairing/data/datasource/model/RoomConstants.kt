@@ -2,6 +2,7 @@ package com.furiqd.pairing.data.datasource.model
 
 object RoomConstants {
     const val COLLECTION_ROOMS = "rooms"
+    const val COLLECTION_USERS = "users"
 
     object Fields {
         const val CODE = "code"

@@ -6,7 +6,7 @@ sealed interface MainEvent {
     object ProfileClicked : MainEvent
     object CameraClicked : MainEvent
     data class CopyInviteCodeClicked(val code: String) : MainEvent
-    object LeaveRoomClicked : MainEvent
+    data class DeleteRoomClicked(val roomId: String) : MainEvent
     object InciteFriendClicked : MainEvent
     object RoomChangedToNextInPager : MainEvent
     object RoomChangedToPreviousInPager : MainEvent

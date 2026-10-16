@@ -36,11 +36,6 @@ fun PairingRoomWithDetails.toUiModel(
             friendAvatarUrl = formattedGuestAvatar
         )
 
-        is RoomStatus.Expired -> RoomUiModel.Expired(
-            id = this.room.id,
-            isSelected = isSelected
-        )
-
         is RoomStatus.NotFound -> RoomUiModel.Placeholder(
             id = this.room.id,
             isSelected = isSelected

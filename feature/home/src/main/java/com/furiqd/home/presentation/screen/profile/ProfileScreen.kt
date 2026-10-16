@@ -103,8 +103,8 @@ fun ProfileRoute(
     onNavigateToMain: () -> Unit,
     onNavigateToAuth: () -> Unit,
     onNavigateToEditProfile: () -> Unit,
-    viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val viewModel: ProfileViewModel = hiltViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }

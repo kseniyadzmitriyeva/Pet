@@ -72,11 +72,9 @@ fun MainScreen(
                     WaitingForFriendRoomCard(
                         room = room,
                         onClick = { /*onEvent(MainEvent.WaitingFriendRoomClicked(room.id))*/ },
-                        modifier = modifier
+                        modifier = modifier,
+                        onDeleteClick = { onEvent(MainEvent.DeleteRoomClicked(room.id)) }
                     )
-                }
-                is RoomUiModel.Expired -> {
-                    // TODO: ExpiredCard
                 }
             }
         }
@@ -87,10 +85,9 @@ fun MainRoute(
     onNavigateToProfile: () -> Unit,
     onNavigateToAuth: () -> Unit,
     onNavigateToPairing: () -> Unit,
-    viewModel: MainViewModel = hiltViewModel()
 ) {
-     val state by viewModel.uiState.collectAsStateWithLifecycle()
-
+    val viewModel: MainViewModel = hiltViewModel()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {

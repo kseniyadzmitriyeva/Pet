@@ -34,11 +34,6 @@ sealed interface RoomUiModel {
         val compositeImageUri: String? = null
     ) : RoomUiModel
 
-    data class Expired(
-        override val id: String,
-        override val isSelected: Boolean = false
-    ) : RoomUiModel
-
     data class Placeholder(
         override val id: String = "placeholder_id",
         override val isSelected: Boolean = false

@@ -8,7 +8,6 @@ fun PairingRoomDto.toDomain(): PairingRoom {
     val domainStatus = when (this.status.uppercase()) {
         "WAITING" -> RoomStatus.WaitingForFriend
         "ACTIVE" -> RoomStatus.Active
-        "EXPIRED" -> RoomStatus.Expired
         else -> RoomStatus.NotFound
     }
 
@@ -27,7 +26,6 @@ fun PairingRoom.toDto(): PairingRoomDto {
     val stringStatus = when (this.status) {
         is RoomStatus.WaitingForFriend -> "WAITING"
         is RoomStatus.Active -> "ACTIVE"
-        is RoomStatus.Expired -> "EXPIRED"
         is RoomStatus.NotFound -> "NOT_FOUND"
     }
 

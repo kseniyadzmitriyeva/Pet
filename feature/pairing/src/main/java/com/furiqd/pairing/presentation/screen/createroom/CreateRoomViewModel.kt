@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateRoomViewModel @Inject constructor(
+internal class CreateRoomViewModel @Inject constructor(
     private val createRoomUseCase: CreateRoomUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateRoomState())

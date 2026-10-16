@@ -3,18 +3,20 @@ package com.furiqd.pairing.data.repository
 import com.furiqd.pairing.data.datasource.PairingLocalDataSource
 import com.furiqd.pairing.data.datasource.PairingRemoteDataSource
 import com.furiqd.pairing.data.datasource.RoomException
+import com.furiqd.pairing.data.datasource.model.dto.JointPetDto
+import com.furiqd.pairing.data.datasource.model.dto.PairingRoomDto
 import com.furiqd.pairing.data.mapper.toDomain
 import com.furiqd.shared.domain.model.PairingRoom
 import com.furiqd.shared.domain.model.PetEggType
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
+import java.util.UUID
 import javax.inject.Inject
 
 internal interface PairingRepository {
-    suspend fun createRoom(
-        hostUserId: String,
-        petName: String,
-        petEggType: PetEggType
-    ): Result<PairingRoom>
+    suspend fun createRoom(hostUserId: String,
+                           petName: String,
+                           petEggType: PetEggType): Result<String>
 
     suspend fun joinRoom(
         inviteCode: String,
@@ -29,29 +31,39 @@ internal class PairingRepositoryImpl @Inject constructor(
     private val localDataSource: PairingLocalDataSource
 ) : PairingRepository {
 
-    override suspend fun createRoom(hostUserId: String, petName: String, petEggType: PetEggType): Result<PairingRoom> {
+    override suspend fun createRoom(hostUserId: String,
+                                    petName: String,
+                                    petEggType: PetEggType): Result<String> {
         return runCatching {
-            val generatedCode = generateUniqueCode()
-
-            val roomId = remoteDataSource.createRoom(
-                hostUserId = hostUserId,
-                uniqueCode = generatedCode,
-                petName = petName,
-                petEggTypeId = petEggType.id
+            var uniqueCode: String
+            do {
+                uniqueCode = (100000..999999).random().toString()
+            } while (remoteDataSource.isCodeExisting(uniqueCode))
+            val roomDto = PairingRoomDto(
+                code = uniqueCode,
+                hostId = hostUserId,
+                friendId = null,
+                status = "WAITING",
+                createdAt = Date(),
+                pet = JointPetDto(
+                    id = UUID.randomUUID().toString(),
+                    name = petName,
+                    petEggType = petEggType.id,
+                    stage = "EGG",
+                    level = 1,
+                    experience = 0,
+                    hatchedAt = null
+                )
             )
-
+            val roomId = remoteDataSource.createRoom(roomDto)
             localDataSource.saveRoomId(roomId)
-
-            val roomDto = remoteDataSource.getPairingRoom(roomId)
-                ?: throw IllegalStateException("Failed to load room details")
-
-            roomDto.toDomain()
+            roomId
         }
     }
 
     override suspend fun joinRoom(inviteCode: String, userId: String): Result<String> {
         return runCatching {
-            val roomId = remoteDataSource.joinRoom(inviteCode, userId)
+            val roomId = remoteDataSource.executeJoinTransaction(inviteCode, userId)
             localDataSource.saveRoomId(roomId)
             localDataSource.setPairingComplete(true)
 

@@ -17,8 +17,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.HourglassTop
 import androidx.compose.material.icons.filled.PersonAdd
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -53,6 +55,7 @@ private const val TIMER_DELAY_MILLIS = 1000L
 fun WaitingForFriendRoomCard(
     room: RoomUiModel.WaitingForFriend,
     onClick: () -> Unit,
+    onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var millisLeft by remember(room.expiringTime) {
@@ -95,27 +98,46 @@ fun WaitingForFriendRoomCard(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(32.dp)
+                    .height(72.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f))
                     .padding(horizontal = 12.dp, vertical = 8.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.HourglassTop,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.tertiary,
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = if (millisLeft > 0L) {
-                        stringResource(R.string.room_expires_in, formattedTimeLeft)
-                    } else {
-                        stringResource(R.string.room_expired)
-                    },
-                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onTertiaryContainer
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Absolute.SpaceBetween
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.HourglassTop,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = if (millisLeft > 0L) {
+                            stringResource(R.string.room_expires_in, formattedTimeLeft)
+                        } else {
+                            stringResource(R.string.room_expired)
+                        },
+                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
+                    if (millisLeft <= 0L) {
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Button(
+                            onClick = { onDeleteClick() }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.tertiary,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -236,12 +258,13 @@ private fun WaitingForFriendRoomCardPreview() {
                     inviteCode = "789012",
                     petName = "Дракончик",
                     petAvatarId = drawable.blue_egg,
-                    expiringTime = System.currentTimeMillis() - (15L * 60L * 1000L),
+                    expiringTime = System.currentTimeMillis() - (15L * 60L * 10000L),
                     userAvatarUrl = null,
                     friendAvatarUrl = null
                 ),
                 onClick = {},
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                onDeleteClick = {}
             )
         }
     }

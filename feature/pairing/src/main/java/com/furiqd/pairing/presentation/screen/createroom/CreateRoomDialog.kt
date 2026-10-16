@@ -159,8 +159,8 @@ fun CreateRoomDialog(
 fun CreateRoomRoute(
     onNavigateToMain: () -> Unit,
     onNavigateToHost: (roomId: String) -> Unit,
-    viewModel: CreateRoomViewModel = hiltViewModel()
 ) {
+    val viewModel: CreateRoomViewModel = hiltViewModel()
     val state by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 

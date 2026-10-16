@@ -3,6 +3,7 @@ package com.furiqd.home.presentation.screen.main
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.furiqd.home.domain.usecase.DeleteRoomUseCase
 import com.furiqd.home.domain.usecase.FetchRoomsUseCase
 import com.furiqd.home.presentation.screen.main.mapper.toUiModel
 import com.furiqd.shared.domain.usecase.GetUserUseCase
@@ -24,10 +25,11 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
-class MainViewModel @Inject constructor(
+internal class MainViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val fetchRoomsUseCase: FetchRoomsUseCase,
-    private val imageFormatter: ImageUrlFormatter
+    private val imageFormatter: ImageUrlFormatter,
+    private val deleteRoomUseCase: DeleteRoomUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainState(isLoading = true))
@@ -93,8 +95,10 @@ class MainViewModel @Inject constructor(
                 sendEffect(MainEffect.NavigateToPairing)
             }
 
-            is MainEvent.LeaveRoomClicked -> {
-                // TODO: Вызвать UseCase для выхода из комнаты
+            is MainEvent.DeleteRoomClicked -> {
+                viewModelScope.launch {
+                    deleteRoomUseCase.invoke(event.roomId)
+                }
             }
 
             is MainEvent.InciteFriendClicked -> {
@@ -128,7 +132,6 @@ class MainViewModel @Inject constructor(
                 is RoomUiModel.Active -> room.copy(isSelected = isSelected)
                 is RoomUiModel.Placeholder -> room.copy(isSelected = isSelected)
                 is RoomUiModel.WaitingForFriend -> room.copy(isSelected = isSelected)
-                is RoomUiModel.Expired -> room.copy(isSelected = isSelected)
             }
         }
     }

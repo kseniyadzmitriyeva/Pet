@@ -1,5 +1,6 @@
 package com.furiqd.home.domain.usecase
 
+import com.furiqd.home.domain.repository.HomeRepository
 import com.furiqd.shared.domain.model.PairingRoomWithDetails
 import com.furiqd.shared.domain.repository.RoomRepository
 import com.furiqd.shared.domain.repository.UserRepository
@@ -10,8 +11,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class FetchRoomsUseCase @Inject constructor(
-    private val roomRepository: RoomRepository,
+internal class FetchRoomsUseCase @Inject constructor(
+    private val roomRepository: HomeRepository,
     private val userRepository: UserRepository
 ) {
     operator fun invoke(userId: String): Flow<List<PairingRoomWithDetails>> {

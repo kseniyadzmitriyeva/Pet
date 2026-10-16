@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel@Inject constructor(
+internal class ProfileViewModel@Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val updateAvatarUseCase: UpdateAvatarUseCase,

@@ -3,6 +3,7 @@ package com.furiqd.pairing.data.datasource
 import com.furiqd.pairing.data.datasource.model.dto.JointPetDto
 import com.furiqd.pairing.data.datasource.model.dto.PairingRoomDto
 import com.furiqd.pairing.data.datasource.model.RoomConstants
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.firestore.toObject
@@ -13,21 +14,14 @@ import java.util.Date
 import java.util.UUID
 import javax.inject.Inject
 interface PairingRemoteDataSource {
-    suspend fun createRoom(
-        hostUserId: String,
-        uniqueCode: String,
-        petName: String,
-        petEggTypeId: Int
-    ): String
+    suspend fun createRoom(newRoomDto: PairingRoomDto): String
 
-    suspend fun joinRoom(
-        inviteCode: String,
-        userId: String
-    ): String
+    suspend fun executeJoinTransaction(inviteCode: String, friendUserId: String): String
 
     suspend fun getPairingRoom(roomId: String): PairingRoomDto?
 
     fun observeRoom(roomId: String): Flow<PairingRoomDto?>
+    suspend fun isCodeExisting(code: String): Boolean
 }
 
 internal class FirebasePairingDataSource @Inject constructor(
@@ -35,64 +29,59 @@ internal class FirebasePairingDataSource @Inject constructor(
 ) : PairingRemoteDataSource {
 
     private val roomsCollection = firestore.collection(RoomConstants.COLLECTION_ROOMS)
+    private val usersCollection = firestore.collection(RoomConstants.COLLECTION_USERS)
 
-    override suspend fun createRoom(
-        hostUserId: String,
-        uniqueCode: String,
-        petName: String,
-        petEggTypeId: Int
-    ): String {
-        val newRoomDto = PairingRoomDto(
-            code = uniqueCode,
-            hostId = hostUserId,
-            friendId = null,
-            status = RoomConstants.Status.WAITING,
-            createdAt = Date(),
-            pet = JointPetDto(
-                id = UUID.randomUUID().toString(),
-                name = petName,
-                petEggType = petEggTypeId,
-                stage = RoomConstants.PetStage.EGG,
-                level = RoomConstants.Defaults.INITIAL_LEVEL,
-                experience = RoomConstants.Defaults.INITIAL_EXP,
-                hatchedAt = null
-            )
-        )
+    override suspend fun isCodeExisting(code: String): Boolean {
+        val querySnapshot = roomsCollection
+            .whereEqualTo("code", code)
+            .whereIn("status", listOf("WAITING", "ACTIVE"))
+            .get()
+            .await()
 
+        return !querySnapshot.isEmpty
+
+    }
+
+    override suspend fun createRoom(newRoomDto: PairingRoomDto): String {
         val documentRef = roomsCollection.add(newRoomDto).await()
+        val userRef = usersCollection.document(newRoomDto.hostId)
+        userRef.update("roomIds",
+            FieldValue.arrayUnion(documentRef.id)).await()
         return documentRef.id
     }
 
-    override suspend fun joinRoom(inviteCode: String, userId: String): String {
+    override suspend fun executeJoinTransaction(inviteCode: String, friendUserId: String): String {
         val querySnapshot = roomsCollection
-            .whereEqualTo(RoomConstants.Fields.CODE, inviteCode)
-            .whereEqualTo(RoomConstants.Fields.STATUS, RoomConstants.Status.WAITING)
+            .whereEqualTo("code", inviteCode)
+            .whereEqualTo("status", "WAITING")
             .limit(1)
             .get()
             .await()
 
         if (querySnapshot.isEmpty) {
-            throw RoomException.RoomNotFoundException()
+            throw NoSuchElementException("Error: room not found or exists")
         }
 
         val document = querySnapshot.documents.first()
         val roomRef = document.reference
+        val userRef = usersCollection.document(friendUserId)
 
-        firestore.runTransaction { transaction ->
+        return firestore.runTransaction<String> { transaction ->
             val freshSnapshot = transaction.get(roomRef)
-            val currentStatus = freshSnapshot.getString(RoomConstants.Fields.STATUS)
+            val currentStatus = freshSnapshot.getString("status")
 
-            if (currentStatus != RoomConstants.Status.WAITING) {
-                throw RoomException.RoomAlreadyOccupiedException()
+            if (currentStatus != "WAITING") {
+                throw IllegalStateException("Room exists and occupied")
             }
 
-            transaction.update(roomRef, RoomConstants.Fields.FRIEND_ID, userId)
-            transaction.update(roomRef, RoomConstants.Fields.STATUS, RoomConstants.Status.ACTIVE)
-            transaction.update(roomRef, RoomConstants.Fields.PET_STAGE, RoomConstants.PetStage.BABY)
-            transaction.update(roomRef, RoomConstants.Fields.PET_HATCHED_AT, Date())
+            transaction.update(roomRef, "friendId", friendUserId)
+            transaction.update(roomRef, "status", "ACTIVE")
+            transaction.update(roomRef, "pet.stage", "BABY")
+            transaction.update(roomRef, "pet.hatchedAt", Date())
+            transaction.update(userRef, "roomIds",
+                FieldValue.arrayUnion(document.id))
+            document.id
         }.await()
-
-        return document.id
     }
 
     override suspend fun getPairingRoom(roomId: String): PairingRoomDto? {
